@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 // Example values for the demo persona (plan section 8). Illustration only — not engine output.
 const COLUMNS = [
-  { name: "Outside buyer", price: 4_849_200, tax: 963_299, afterTax: 3_885_901, jobs: "Usually kept" },
+  { name: "Canadian buyer", price: 4_849_200, tax: 963_299, afterTax: 3_885_901, jobs: "Usually kept" },
   { name: "Your employees", price: 4_849_200, tax: 0, afterTax: 4_849_200, jobs: "Kept, and they become owners", best: true },
   { name: "Private equity", price: 5_334_120, tax: 1_093_088, afterTax: 4_241_032, jobs: "At risk" },
 ];
@@ -13,7 +13,7 @@ const COLUMNS = [
 const BARS = [
   { name: "Employees (EOT)", value: 4_849_200, best: true },
   { name: "Private equity", value: 4_241_032 },
-  { name: "Outside buyer", value: 3_885_901 },
+  { name: "Canadian buyer", value: 3_885_901 },
   { name: "Wind down", value: 540_000 },
 ];
 
@@ -40,9 +40,9 @@ function ComparisonMock() {
   ];
   return (
     <WindowChrome title="Handover · Exit options">
-      <div className="space-y-3 p-4 sm:p-5">
+      <div className="space-y-3 p-4 sm:p-5 lg:p-6">
         <p className="font-heading text-base font-semibold sm:text-lg">Exit options for Mancini Precision Machining</p>
-        <div className="grid grid-cols-[5.5rem_repeat(3,1fr)] text-[0.7rem] leading-snug sm:grid-cols-[7rem_repeat(3,1fr)] sm:text-xs">
+        <div className="grid grid-cols-[5.5rem_repeat(3,1fr)] text-[0.7rem] leading-snug sm:grid-cols-[7rem_repeat(3,1fr)] sm:text-xs xl:text-[0.8rem]">
           <div />
           {COLUMNS.map((c) => (
             <div key={c.name} className={cn("space-y-1 rounded-t-lg px-2 pt-2 pb-1 font-semibold", c.best && "bg-secondary")}>
@@ -80,7 +80,7 @@ function ComparisonMock() {
 
 function ReadinessMock() {
   return (
-    <div className="rounded-xl bg-card p-4 text-card-foreground shadow-2xl ring-1 ring-black/10 [&_figcaption]:text-sm [&_svg]:w-40">
+    <div className="rounded-xl bg-card p-4 text-card-foreground lg:p-5 shadow-2xl ring-1 ring-black/10 [&_figcaption]:text-sm [&_svg]:w-40 lg:[&_svg]:w-44">
       <p className="mb-1 text-center text-xs font-semibold tracking-wide text-muted-foreground uppercase">Readiness</p>
       <ReadinessDial score={66} bandLabel="Getting there" />
     </div>
@@ -90,7 +90,7 @@ function ReadinessMock() {
 function BarsMock() {
   const max = Math.max(...BARS.map((b) => b.value));
   return (
-    <div className="w-64 space-y-2.5 rounded-xl bg-card p-4 text-card-foreground shadow-2xl ring-1 ring-black/10">
+    <div className="w-64 space-y-2.5 lg:w-72 rounded-xl bg-card p-4 text-card-foreground shadow-2xl ring-1 ring-black/10">
       <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">After-tax to you</p>
       {BARS.map((b) => (
         <div key={b.name} className="space-y-1">
@@ -113,19 +113,21 @@ function BarsMock() {
 /** Floating app-screen mockups for the hero's foreground. Decorative; described by a hidden caption. */
 export function ProductPreview() {
   return (
-    <figure className="relative mx-auto w-full max-w-xl lg:max-w-none">
+    // Pulled left into the grid gap (negative left margin) and slightly larger than the column.
+    <figure className="relative mx-auto w-full max-w-xl lg:-ml-6 lg:max-w-none xl:-ml-16">
       <figcaption className="sr-only">
         Example results for a sample business: selling to employees leaves about $4.85 million after tax,
         compared with about $3.89 million from an outside buyer.
       </figcaption>
-      <div aria-hidden className="relative pt-6 pb-10 sm:pb-36 lg:pt-16">
-        <div className="absolute -top-2 right-0 z-0 hidden rotate-[3deg] sm:block lg:-top-4 lg:-right-10">
+      {/* Top padding leaves room for the after-tax card so all its bars show above the main window. */}
+      <div aria-hidden className="relative pt-6 pb-10 sm:pt-36 sm:pb-36 lg:pt-40">
+        <div className="absolute top-0 right-2 z-0 hidden rotate-[3deg] sm:block lg:-top-2 lg:right-0">
           <BarsMock />
         </div>
-        <div className="relative z-10 lg:mr-[-3rem] xl:mr-[-5rem]">
+        <div className="relative z-10 lg:-mr-4 xl:-mr-10">
           <ComparisonMock />
         </div>
-        <div className="absolute bottom-0 -left-4 z-20 hidden -rotate-[3deg] sm:block lg:-left-10">
+        <div className="absolute bottom-0 -left-4 z-20 hidden -rotate-[3deg] sm:block lg:-left-6">
           <ReadinessMock />
         </div>
       </div>

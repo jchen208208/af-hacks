@@ -2,8 +2,10 @@ import Link from "next/link";
 import { ArrowRight, ClipboardList, Map, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DemoButton } from "@/components/landing/DemoButton";
-import { HeroBackdrop } from "@/components/landing/HeroBackdrop";
+import { HeroBackdrop } from "@/components/layout/HeroBackdrop";
+import { heroButtonClass } from "@/components/layout/PageHero";
 import { ProductPreview } from "@/components/landing/ProductPreview";
+import { heroPhotoSrc } from "@/components/landing/heroPhoto";
 
 const STATS = [
   { value: "76%", label: "of Canadian small-business owners plan to exit within 10 years", source: "CFIB, 2023" },
@@ -17,22 +19,17 @@ const STEPS = [
   { icon: Map, title: "Leave with a plan", body: "A year-by-year checklist and who to call. Print it and bring it to your accountant." },
 ];
 
-// Hero palette: shades of the product's deep green, with a warm gold for the big numbers.
-const HERO_BG = "bg-[oklch(0.3_0.055_165)]";
-const BAND_BG = "bg-[oklch(0.25_0.045_165)]";
-const GOLD = "text-[oklch(0.86_0.11_85)]";
-
 export default function LandingPage() {
   return (
     <>
-      <section className={`relative isolate overflow-hidden ${HERO_BG} text-white`}>
-        <HeroBackdrop />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-12 sm:px-6 lg:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-8 lg:py-20">
+      <section className={`relative isolate overflow-hidden bg-hero text-hero-foreground`}>
+        <HeroBackdrop photoSrc={heroPhotoSrc} />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-12 sm:px-6 lg:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-8 lg:pt-12 lg:pb-14">
           <div className="space-y-7">
             <h1 className="font-heading text-4xl leading-[1.1] font-semibold text-balance sm:text-5xl xl:text-6xl">
               Your business took decades to build. Plan how it lives on.
             </h1>
-            <p className="max-w-xl text-xl leading-relaxed text-[oklch(0.92_0.02_165)]">
+            <p className="max-w-xl text-xl leading-relaxed text-hero-muted">
               In 10 minutes: what your business is worth, how ready it is to sell, and every way to exit —
               including selling to your own employees tax-free.
             </p>
@@ -40,7 +37,7 @@ export default function LandingPage() {
               <Button
                 asChild
                 size="xl"
-                className="h-14 bg-white px-8 text-lg text-[oklch(0.3_0.055_165)] shadow-lg hover:bg-[oklch(0.95_0.02_165)] focus-visible:ring-white/60"
+                className={heroButtonClass.solid}
               >
                 <Link href="/snapshot">
                   Start my plan <ArrowRight />
@@ -48,21 +45,21 @@ export default function LandingPage() {
               </Button>
               <DemoButton
                 variant="ghost"
-                className="h-14 border-2 border-white/80 px-8 text-lg text-white hover:bg-white/10 hover:text-white focus-visible:ring-white/60"
+                className={heroButtonClass.outline}
               />
             </div>
-            <p className="text-base text-[oklch(0.88_0.02_165)]">Free. No account. Your answers stay in your browser.</p>
+            <p className="text-base text-hero-muted">Free. No account. Your answers stay in your browser.</p>
           </div>
 
           <ProductPreview />
         </div>
       </section>
 
-      <section aria-label="Why this matters" className={`${BAND_BG} text-white`}>
+      <section aria-label="Why this matters" className={`bg-band text-hero-foreground`}>
         <ul className="mx-auto grid max-w-6xl divide-y divide-white/15 px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6">
           {STATS.map((s) => (
             <li key={s.value} className="flex flex-col gap-2 py-8 sm:px-8 sm:py-12 sm:first:pl-0 sm:last:pr-0">
-              <p className={`font-heading text-6xl font-semibold ${GOLD}`}>{s.value}</p>
+              <p className="font-heading text-6xl font-semibold text-highlight">{s.value}</p>
               <p className="text-lg leading-snug">{s.label}</p>
               <p className="text-sm text-white/75">{s.source}</p>
             </li>

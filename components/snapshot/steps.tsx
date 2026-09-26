@@ -18,6 +18,9 @@ import {
 } from "@/lib/snapshot/questions";
 import { ChoiceField, NumberField, RankField, SelectField, TextField } from "./fields";
 
+/** Two fields side by side on wider screens. */
+const PAIR = "grid gap-9 sm:grid-cols-2";
+
 export interface StepProps {
   draft: SnapshotDraft;
   update: (patch: SnapshotDraft) => void;
@@ -28,10 +31,14 @@ export function StepBusiness({ draft, update, errors }: StepProps) {
   return (
     <>
       <TextField label="Business name" hint="Optional" value={draft.businessName} onChange={(v) => update({ businessName: v })} />
-      <SelectField label="Industry" choices={INDUSTRIES} value={draft.industry} onChange={(v) => update({ industry: v })} error={errors.industry} />
-      <SelectField label="Province or territory" choices={PROVINCES} value={draft.province} onChange={(v) => update({ province: v })} error={errors.province} />
-      <NumberField label="Year founded" placeholder="e.g. 1991" value={draft.yearFounded} onChange={(v) => update({ yearFounded: v })} error={errors.yearFounded} />
-      <NumberField label="Number of employees" value={draft.employees} onChange={(v) => update({ employees: v })} error={errors.employees} />
+      <div className={PAIR}>
+        <SelectField label="Industry" choices={INDUSTRIES} value={draft.industry} onChange={(v) => update({ industry: v })} error={errors.industry} />
+        <SelectField label="Province or territory" choices={PROVINCES} value={draft.province} onChange={(v) => update({ province: v })} error={errors.province} />
+      </div>
+      <div className={PAIR}>
+        <NumberField label="Year founded" placeholder="e.g. 1991" value={draft.yearFounded} onChange={(v) => update({ yearFounded: v })} error={errors.yearFounded} />
+        <NumberField label="Number of employees" value={draft.employees} onChange={(v) => update({ employees: v })} error={errors.employees} />
+      </div>
       <NumberField label="Annual revenue" prefix="$" hint="Total sales last year" value={draft.revenue} onChange={(v) => update({ revenue: v })} error={errors.revenue} />
     </>
   );
@@ -66,7 +73,7 @@ export function StepNumbers({ draft, update, errors }: StepProps) {
         />
         <button
           type="button"
-          className="text-base text-primary underline underline-offset-4"
+          className="rounded-md text-base font-semibold text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
           onClick={() => update({ sharesCostBase: DEFAULT_SHARES_COST_BASE })}
         >
           I&apos;m not sure — use $100

@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle2, CircleHelp, XCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { HeroBackdrop } from "@/components/layout/HeroBackdrop";
 import { EOT_QUESTIONS } from "@/lib/engine/eot";
 import type { EotAnswer, EotResult } from "@/lib/engine/types";
 import { useSnapshot } from "@/lib/state/SnapshotContext";
@@ -13,49 +13,68 @@ const ANSWERS: { value: EotAnswer; label: string }[] = [
   { value: "unsure", label: "Not sure" },
 ];
 
+// No amber/yellow text: "needs review" uses a neutral treatment.
 const STATUS_STYLE = {
-  likely: { icon: CheckCircle2, className: "bg-secondary text-secondary-foreground" },
-  review: { icon: CircleHelp, className: "bg-warning/10 text-foreground" },
-  unlikely: { icon: XCircle, className: "bg-destructive/10 text-destructive" },
+  likely: { icon: CheckCircle2, className: "border-primary/30 bg-secondary text-secondary-foreground", iconClass: "text-primary" },
+  review: { icon: CircleHelp, className: "border-border bg-card text-foreground", iconClass: "text-muted-foreground" },
+  unlikely: { icon: XCircle, className: "border-destructive/30 bg-destructive/5 text-foreground", iconClass: "text-destructive" },
 };
 
 export function EotCheck({ result }: { result: EotResult }) {
   const { eotAnswers, setEotAnswer } = useSnapshot();
   const status = STATUS_STYLE[result.status];
+  const answered = EOT_QUESTIONS.filter((q) => eotAnswers[q.id]).length;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
-      <Card className="h-fit bg-secondary/50">
-        <CardHeader>
-          <CardTitle className="text-xl">What is an Employee Ownership Trust?</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-base leading-relaxed">
-          <p>
-            An Employee Ownership Trust (EOT) buys your company on behalf of your employees. The
-            company&apos;s future profits pay you out over time. The first $10M of your gain is tax-free.
+    <div className="grid items-start gap-6 lg:grid-cols-[1fr_1.4fr]">
+      <aside className="relative isolate overflow-hidden rounded-2xl bg-hero p-6 text-hero-foreground shadow-sm sm:p-8 lg:sticky lg:top-24 print:static print:rounded-none print:bg-transparent print:p-0 print:text-foreground">
+        <HeroBackdrop variant="page" />
+        <div className="relative space-y-4">
+          <p className="text-sm font-semibold tracking-[0.12em] text-highlight uppercase print:text-primary">
+            What is an EOT?
           </p>
-          <p className="text-muted-foreground">
-            Your employees don&apos;t pay up front. The trust usually pays you over several years from
-            company profits, often with help from a bank or vendor financing.
+          <h3 className="font-heading text-2xl leading-snug font-semibold">An Employee Ownership Trust</h3>
+          <p className="text-base leading-relaxed text-hero-muted print:text-foreground">
+            It buys your company on behalf of your employees. The company&apos;s future profits pay you out over
+            time.
           </p>
-        </CardContent>
-      </Card>
+          <p className="border-y border-white/15 py-4 print:border-border">
+            <span className="block font-heading text-5xl font-semibold text-highlight print:text-3xl print:text-primary">$10M</span>
+            <span className="text-base text-hero-muted print:text-muted-foreground">of your gain can be tax-free</span>
+          </p>
+          <p className="text-base leading-relaxed text-hero-muted print:text-muted-foreground">
+            Your employees don&apos;t pay up front. The trust usually pays you over several years from company
+            profits, often with help from a bank or vendor financing.
+          </p>
+        </div>
+      </aside>
 
       <div className="space-y-4">
         <div
           role="status"
-          className={cn("flex items-center gap-2 rounded-lg px-4 py-3 text-lg font-semibold", status.className)}
+          className={cn("flex items-center gap-3 rounded-2xl border px-5 py-4 shadow-sm", status.className)}
         >
-          <status.icon className="size-6" /> {result.label}
+          <status.icon className={cn("size-7 shrink-0", status.iconClass)} aria-hidden />
+          <div>
+            <p className="font-heading text-xl font-semibold">{result.label}</p>
+            <p className="text-sm text-muted-foreground">
+              {answered} of {EOT_QUESTIONS.length} questions answered
+            </p>
+          </div>
         </div>
-        <ol className="space-y-4">
+        <ol className="space-y-3">
           {EOT_QUESTIONS.map((q, i) => (
-            <li key={q.id} className="space-y-2 rounded-lg border bg-card p-4">
-              <p className="text-base">
-                <span className="mr-2 font-semibold text-primary">{i + 1}.</span>
-                {q.text}
+            <li key={q.id} className="print-break-avoid space-y-3 rounded-2xl border bg-card p-5 shadow-sm print:rounded-none print:border-0 print:p-0 print:shadow-none">
+              <p className="flex gap-3 text-base leading-relaxed">
+                <span
+                  aria-hidden
+                  className="grid size-7 shrink-0 place-items-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground"
+                >
+                  {i + 1}
+                </span>
+                <span>{q.text}</span>
               </p>
-              <div role="radiogroup" aria-label={q.text} className="flex flex-wrap gap-2">
+              <div role="radiogroup" aria-label={q.text} className="flex flex-wrap gap-2 sm:pl-10">
                 {ANSWERS.map((a) => {
                   const checked = eotAnswers[q.id] === a.value;
                   return (
@@ -66,8 +85,10 @@ export function EotCheck({ result }: { result: EotResult }) {
                       aria-checked={checked}
                       onClick={() => setEotAnswer(q.id, a.value)}
                       className={cn(
-                        "rounded-md border px-4 py-2 text-base transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
-                        checked ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-muted",
+                        "min-h-11 rounded-full border px-5 py-2 text-base font-semibold transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                        checked
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background hover:border-primary/40 hover:bg-secondary hover:text-secondary-foreground",
                       )}
                     >
                       {a.label}

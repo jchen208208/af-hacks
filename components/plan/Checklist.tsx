@@ -31,22 +31,35 @@ export function Checklist({ option, steps }: { option: OptionId; steps: PlanStep
   };
 
   const count = steps.filter((s) => done[s.id]).length;
+  const percent = steps.length ? Math.round((count / steps.length) * 100) : 0;
 
   return (
-    <div className="space-y-3">
-      <p className="text-base text-muted-foreground">
-        {count} of {steps.length} done
-      </p>
-      <ul className="space-y-2">
+    <div className="space-y-5 print:space-y-2">
+      <div className="space-y-2 print:hidden">
+        <p className="text-base font-semibold" aria-live="polite">
+          {count} of {steps.length} done
+        </p>
+        <div
+          role="progressbar"
+          aria-label="Checklist progress"
+          aria-valuemin={0}
+          aria-valuemax={steps.length}
+          aria-valuenow={count}
+          className="h-3 overflow-hidden rounded-full bg-secondary"
+        >
+          <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${percent}%` }} />
+        </div>
+      </div>
+      <ul className="grid gap-3 print:grid-cols-2 print:gap-x-6 print:gap-y-1">
         {steps.map((step) => (
           <li key={step.id}>
-            <label className="group flex cursor-pointer items-start gap-3 rounded-lg border bg-card px-4 py-3 text-base has-data-[state=checked]:bg-secondary">
+            <label className="group flex cursor-pointer items-start gap-4 rounded-xl border bg-card px-5 py-4 text-base shadow-sm transition-colors hover:border-primary/40 has-focus-visible:ring-3 has-focus-visible:ring-ring/50 has-data-[state=checked]:border-primary/30 has-data-[state=checked]:bg-secondary print:rounded-none print:border-0 print:bg-transparent print:px-0 print:py-1 print:shadow-none">
               <Checkbox
-                className="mt-1 size-5"
+                className="mt-0.5 size-6 rounded-md border-2 [&_svg]:size-4"
                 checked={!!done[step.id]}
                 onCheckedChange={(c) => toggle(step.id, c === true)}
               />
-              <span className="group-has-data-[state=checked]:text-muted-foreground group-has-data-[state=checked]:line-through">
+              <span className="leading-snug group-has-data-[state=checked]:text-muted-foreground group-has-data-[state=checked]:line-through group-has-data-[state=checked]:decoration-primary/60">
                 {step.title}
               </span>
             </label>

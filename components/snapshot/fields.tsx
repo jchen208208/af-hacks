@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { ArrowDown, ArrowUp, Info } from "lucide-react";
+import { ArrowDown, ArrowUp, CircleAlert, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Choice } from "@/lib/snapshot/questions";
 import { cn } from "@/lib/utils";
+
+/** Shared control look: tall, rounded, green focus ring (matches the site theme). */
+const CONTROL =
+  "h-14 rounded-xl border-input bg-card px-4 text-base shadow-xs md:text-base focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/20";
 
 interface FieldShellProps {
   id: string;
@@ -25,26 +29,31 @@ function FieldShell({ id, label, hint, help, error, children, as = "div" }: Fiel
   const Wrapper = as;
   const LabelEl = as === "fieldset" ? "legend" : Label;
   return (
-    <Wrapper className="space-y-2" aria-describedby={error ? `${id}-error` : undefined}>
+    <Wrapper className="min-w-0 space-y-2.5" aria-describedby={error ? `${id}-error` : undefined}>
       <div className="flex items-center gap-2">
-        <LabelEl htmlFor={as === "fieldset" ? undefined : id} className="text-base font-semibold">
+        <LabelEl htmlFor={as === "fieldset" ? undefined : id} className="text-lg leading-snug font-semibold">
           {label}
         </LabelEl>
         {help && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <button type="button" aria-label={`What does "${label}" mean?`} className="text-muted-foreground hover:text-foreground">
-                <Info className="size-4" />
+              <button
+                type="button"
+                aria-label={`What does "${label}" mean?`}
+                className="grid size-8 shrink-0 place-items-center rounded-full text-primary hover:bg-secondary focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+              >
+                <Info className="size-5" />
               </button>
             </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-sm">{help}</TooltipContent>
+            <TooltipContent className="max-w-xs text-sm leading-relaxed">{help}</TooltipContent>
           </Tooltip>
         )}
       </div>
-      {hint && <p className="text-sm text-muted-foreground">{hint}</p>}
+      {hint && <p className="text-base text-muted-foreground">{hint}</p>}
       {children}
       {error && (
-        <p id={`${id}-error`} className="text-sm font-medium text-destructive">
+        <p id={`${id}-error`} className="flex items-center gap-1.5 text-base font-medium text-destructive">
+          <CircleAlert className="size-4 shrink-0" aria-hidden />
           {error}
         </p>
       )}
@@ -65,7 +74,7 @@ export function TextField(props: {
     <FieldShell id={id} {...props}>
       <Input
         id={id}
-        className="h-12 max-w-md text-base"
+        className={cn(CONTROL, "max-w-lg")}
         value={props.value ?? ""}
         placeholder={props.placeholder}
         onChange={(e) => props.onChange(e.target.value)}
@@ -89,7 +98,7 @@ export function NumberField(props: {
     <FieldShell id={id} {...props}>
       <div className="relative max-w-xs">
         {props.prefix && (
-          <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
+          <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center font-semibold text-muted-foreground">
             {props.prefix}
           </span>
         )}
@@ -98,7 +107,7 @@ export function NumberField(props: {
           type="number"
           inputMode="numeric"
           aria-invalid={!!props.error}
-          className={cn("h-12 text-base", props.prefix && "pl-7")}
+          className={cn(CONTROL, "tabular-nums", props.prefix && "pl-9")}
           value={props.value ?? ""}
           placeholder={props.placeholder}
           onChange={(e) => props.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
@@ -120,12 +129,12 @@ export function SelectField<T extends string>(props: {
   return (
     <FieldShell id={id} {...props}>
       <Select value={props.value} onValueChange={(v) => props.onChange(v as T)}>
-        <SelectTrigger id={id} aria-invalid={!!props.error} className="h-12 w-full max-w-md text-base">
+        <SelectTrigger id={id} aria-invalid={!!props.error} className={cn(CONTROL, "w-full max-w-lg data-[size=default]:h-14")}>
           <SelectValue placeholder={props.placeholder ?? "Choose one"} />
         </SelectTrigger>
         <SelectContent>
           {props.choices.map((c) => (
-            <SelectItem key={c.value} value={c.value} className="text-base">
+            <SelectItem key={c.value} value={c.value} className="py-2.5 text-base">
               {c.label}
             </SelectItem>
           ))}
@@ -147,13 +156,14 @@ export function ChoiceField<T extends string>(props: {
   columns?: 2 | 3 | 4;
 }) {
   const id = useId();
-  const cols = { 2: "sm:grid-cols-2", 3: "sm:grid-cols-3", 4: "sm:grid-cols-4" }[props.columns ?? 2];
+  const cols = { 2: "sm:grid-cols-2", 3: "sm:grid-cols-3", 4: "sm:grid-cols-2 lg:grid-cols-4" }[props.columns ?? 2];
   return (
     <FieldShell id={id} as="fieldset" {...props}>
       <RadioGroup
         value={props.value ?? ""}
         onValueChange={(v) => props.onChange(v as T)}
-        className={cn("grid gap-2", cols)}
+        aria-invalid={!!props.error}
+        className={cn("grid gap-3", cols)}
       >
         {props.choices.map((c) => {
           const itemId = `${id}-${c.value}`;
@@ -161,9 +171,15 @@ export function ChoiceField<T extends string>(props: {
             <Label
               key={c.value}
               htmlFor={itemId}
-              className="flex cursor-pointer items-center gap-3 rounded-lg border bg-card px-4 py-3 text-base font-normal has-data-[state=checked]:border-primary has-data-[state=checked]:bg-secondary"
+              className={cn(
+                "flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border-2 bg-card px-4 py-3 text-base leading-snug font-medium transition-colors",
+                "hover:border-primary/40 hover:bg-secondary/40",
+                "has-focus-visible:ring-4 has-focus-visible:ring-primary/20",
+                "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-secondary has-data-[state=checked]:text-secondary-foreground",
+                props.error && "border-destructive/40",
+              )}
             >
-              <RadioGroupItem id={itemId} value={c.value} />
+              <RadioGroupItem id={itemId} value={c.value} className="size-5 focus-visible:ring-0" />
               {c.label}
             </Label>
           );
@@ -189,16 +205,45 @@ export function RankField<T extends string>(props: {
   };
   return (
     <FieldShell id={id} as="fieldset" {...props}>
-      <ol className="max-w-md space-y-2">
+      <ol className="max-w-lg space-y-2.5">
         {props.value.map((item, i) => (
-          <li key={item} className="flex items-center gap-3 rounded-lg border bg-card px-4 py-2">
-            <span className="w-6 font-heading text-lg font-semibold text-primary">{i + 1}</span>
-            <span className="flex-1 text-base">{props.labels[item]}</span>
-            <Button type="button" variant="ghost" size="icon-lg" disabled={i === 0} onClick={() => move(i, i - 1)} aria-label={`Move "${props.labels[item]}" up`}>
-              <ArrowUp />
+          <li
+            key={item}
+            className={cn(
+              "flex items-center gap-3 rounded-xl border-2 bg-card py-2 pr-2 pl-3",
+              i === 0 && "border-primary bg-secondary",
+            )}
+          >
+            <span
+              className={cn(
+                "grid size-9 shrink-0 place-items-center rounded-full font-heading text-lg font-semibold",
+                i === 0 ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground",
+              )}
+            >
+              {i + 1}
+            </span>
+            <span className="min-w-0 flex-1 text-base font-medium">{props.labels[item]}</span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-lg"
+              className="size-11 rounded-lg"
+              disabled={i === 0}
+              onClick={() => move(i, i - 1)}
+              aria-label={`Move "${props.labels[item]}" up`}
+            >
+              <ArrowUp className="size-5" />
             </Button>
-            <Button type="button" variant="ghost" size="icon-lg" disabled={i === props.value.length - 1} onClick={() => move(i, i + 1)} aria-label={`Move "${props.labels[item]}" down`}>
-              <ArrowDown />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-lg"
+              className="size-11 rounded-lg"
+              disabled={i === props.value.length - 1}
+              onClick={() => move(i, i + 1)}
+              aria-label={`Move "${props.labels[item]}" down`}
+            >
+              <ArrowDown className="size-5" />
             </Button>
           </li>
         ))}

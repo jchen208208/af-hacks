@@ -4,29 +4,48 @@ import { Bar, BarChart, Cell, LabelList, ResponsiveContainer, XAxis, YAxis } fro
 import type { ExitOption, OptionId } from "@/lib/engine/types";
 import { formatMoney } from "@/lib/format";
 
-/** Horizontal bars of after-tax money per option; best match in the accent colour. */
+/** Short axis labels so the chart still reads at phone width. */
+const SHORT_NAMES: Record<OptionId, string> = {
+  family: "Family",
+  canadian: "Canadian buyer",
+  pe: "Private equity",
+  eot: "Employees (EOT)",
+  winddown: "Wind down",
+};
+
+/** Horizontal bars of after-tax money per option; best match in the brand green. */
 export function AfterTaxChart({ options, bestMatch }: { options: ExitOption[]; bestMatch: OptionId }) {
   const data = options
     .filter((o) => o.afterTax !== undefined && o.status !== "unavailable")
-    .map((o) => ({ id: o.id, name: o.name, afterTax: o.afterTax as number }))
+    .map((o) => ({ id: o.id, name: SHORT_NAMES[o.id], afterTax: o.afterTax as number }))
     .sort((a, b) => b.afterTax - a.afterTax);
 
   return (
-    <figure className="print-break-avoid space-y-2">
-      <figcaption className="text-lg font-semibold">After-tax money to you, by option</figcaption>
-      <div style={{ height: data.length * 64 + 20 }}>
+    <figure className="print-break-avoid space-y-5 rounded-2xl border bg-card p-4 shadow-sm sm:p-8 print:rounded-none print:border-0 print:p-0 print:shadow-none">
+      <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+        <span className="font-heading text-2xl font-semibold">After-tax money to you, by option</span>
+        <span className="flex items-center gap-4 text-sm text-muted-foreground">
+          <span className="flex items-center gap-2">
+            <span aria-hidden className="size-3 rounded-sm bg-chart-1" /> Best match
+          </span>
+          <span className="flex items-center gap-2">
+            <span aria-hidden className="size-3 rounded-sm bg-chart-3" /> Other options
+          </span>
+        </span>
+      </figcaption>
+      <div style={{ height: data.length * 60 + 16 }} className="font-sans">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} layout="vertical" margin={{ top: 0, right: 80, bottom: 0, left: 0 }}>
+          <BarChart data={data} layout="vertical" margin={{ top: 0, right: 64, bottom: 0, left: 0 }}>
             <XAxis type="number" hide />
             <YAxis
               type="category"
               dataKey="name"
-              width={260}
+              width={124}
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "var(--foreground)", fontSize: 15 }}
+              tick={{ fill: "var(--foreground)", fontSize: 14 }}
             />
-            <Bar dataKey="afterTax" radius={[0, 6, 6, 0]} barSize={32} isAnimationActive={false}>
+            <Bar dataKey="afterTax" radius={[0, 8, 8, 0]} barSize={30} isAnimationActive={false}>
               {data.map((d) => (
                 <Cell key={d.id} fill={d.id === bestMatch ? "var(--chart-1)" : "var(--chart-3)"} />
               ))}
@@ -34,7 +53,7 @@ export function AfterTaxChart({ options, bestMatch }: { options: ExitOption[]; b
                 dataKey="afterTax"
                 position="right"
                 formatter={(v) => formatMoney(Number(v))}
-                style={{ fill: "var(--foreground)", fontSize: 16, fontWeight: 600 }}
+                style={{ fill: "var(--foreground)", fontSize: 16, fontWeight: 700 }}
               />
             </Bar>
           </BarChart>

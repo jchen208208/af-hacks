@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { Star } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ArrowRight, Star, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ExitOption, OptionId } from "@/lib/engine/types";
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -27,20 +25,40 @@ const ROWS: Row[] = [
   { label: "Complexity", render: (o) => o.complexity },
 ];
 
-function PlanButton({ option }: { option: ExitOption }) {
+function PlanButton({ option, isBest }: { option: ExitOption; isBest: boolean }) {
   if (option.status === "unavailable") return null;
   return (
-    <Button asChild size="lg" variant="outline" className="no-print w-full text-base whitespace-normal">
-      <Link href={`/plan?option=${option.id}`}>Build my plan</Link>
+    <Button
+      asChild
+      size="lg"
+      variant={isBest ? "default" : "outline"}
+      className="no-print h-auto min-h-12 w-full py-2 text-base whitespace-normal"
+    >
+      <Link href={`/plan?option=${option.id}`}>
+        Build my plan <ArrowRight />
+      </Link>
     </Button>
   );
 }
 
 function BestMatchBadge() {
   return (
-    <Badge className="gap-1 text-sm">
-      <Star className="size-3.5 fill-current" /> Best match for you
-    </Badge>
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-highlight px-3 py-1 font-sans text-sm font-semibold text-hero print:border print:border-primary print:bg-transparent print:text-primary">
+      <Star className="size-3.5 fill-current" aria-hidden /> Best match for you
+    </span>
+  );
+}
+
+/** Caution callout for options that need checking (e.g. EOT likely not eligible). No amber text. */
+function WarningNote({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="flex gap-2 rounded-lg border border-l-4 border-destructive/40 border-l-destructive bg-card px-3 py-2 font-sans text-sm leading-snug font-normal text-foreground">
+      <TriangleAlert className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden />
+      <span>
+        <span className="sr-only">Caution: </span>
+        {children}
+      </span>
+    </p>
   );
 }
 
@@ -48,55 +66,75 @@ function BestMatchBadge() {
 export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; bestMatch: OptionId }) {
   return (
     <>
-      <div className="hidden overflow-x-auto rounded-xl border bg-card lg:block">
-        <table className="w-full table-fixed border-collapse text-base">
+      <div className="hidden overflow-hidden rounded-2xl border bg-card shadow-sm lg:block print:block print:rounded-none print:shadow-none">
+        <table className="w-full table-fixed border-collapse text-base print:text-sm">
           <caption className="sr-only">Exit options compared side by side</caption>
           <thead>
             <tr>
-              <th scope="col" className="w-44 p-4" />
-              {options.map((o) => (
-                <th
-                  key={o.id}
-                  scope="col"
-                  className={cn(
-                    "space-y-2 p-4 text-left align-top font-heading text-lg font-semibold",
-                    o.id === bestMatch && "bg-secondary",
-                    o.status === "unavailable" && "text-muted-foreground",
-                  )}
-                >
-                  {o.id === bestMatch && <BestMatchBadge />}
-                  <div>{o.name}</div>
-                  {o.statusNote && <div className="font-sans text-sm font-normal text-muted-foreground">{o.statusNote}</div>}
-                </th>
-              ))}
+              <th scope="col" className="w-44 p-4 print:w-32" />
+              {options.map((o) => {
+                const isBest = o.id === bestMatch;
+                return (
+                  <th
+                    key={o.id}
+                    scope="col"
+                    className={cn(
+                      "p-4 text-left align-top font-heading text-lg leading-snug font-semibold",
+                      isBest && "bg-hero text-hero-foreground print:bg-transparent print:text-foreground",
+                      o.status === "unavailable" && "bg-muted/60 text-muted-foreground",
+                    )}
+                  >
+                    <div className="space-y-2">
+                      {isBest && <BestMatchBadge />}
+                      <div>{o.name}</div>
+                      {o.status === "unavailable" && o.statusNote && (
+                        <div className="font-sans text-sm font-normal">{o.statusNote}</div>
+                      )}
+                      {o.status === "warning" && o.statusNote && <WarningNote>{o.statusNote}</WarningNote>}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
             {ROWS.map((row) => (
-              <tr key={row.label} className="border-t">
+              <tr key={row.label} className={cn("border-t", row.emphasis && "bg-secondary/40")}>
                 <th scope="row" className="p-4 text-left align-top text-sm font-semibold text-muted-foreground">
                   {row.label}
                 </th>
-                {options.map((o) => (
-                  <td
-                    key={o.id}
-                    className={cn(
-                      "p-4 align-top",
-                      row.emphasis && "font-heading text-2xl font-semibold",
-                      o.id === bestMatch && "bg-secondary",
-                      o.status === "unavailable" && "text-muted-foreground opacity-60",
-                    )}
-                  >
-                    {row.render(o)}
-                  </td>
-                ))}
+                {options.map((o) => {
+                  const isBest = o.id === bestMatch;
+                  return (
+                    <td
+                      key={o.id}
+                      className={cn(
+                        "p-4 align-top",
+                        row.emphasis && "font-heading text-2xl font-semibold print:text-lg",
+                        row.emphasis && isBest && "text-primary",
+                        isBest && "bg-secondary print:bg-transparent",
+                        o.status === "warning" && "bg-destructive/[0.03]",
+                        o.status === "unavailable" && "bg-muted/60 text-muted-foreground",
+                      )}
+                    >
+                      {row.render(o)}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
             <tr className="no-print border-t">
               <td />
               {options.map((o) => (
-                <td key={o.id} className={cn("p-4", o.id === bestMatch && "bg-secondary")}>
-                  <PlanButton option={o} />
+                <td
+                  key={o.id}
+                  className={cn(
+                    "p-4",
+                    o.id === bestMatch && "bg-secondary",
+                    o.status === "unavailable" && "bg-muted/60",
+                  )}
+                >
+                  <PlanButton option={o} isBest={o.id === bestMatch} />
                 </td>
               ))}
             </tr>
@@ -104,38 +142,59 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
         </table>
       </div>
 
-      <div className="grid gap-4 lg:hidden">
-        {options.map((o) => (
-          <Card
-            key={o.id}
-            className={cn(
-              "print-break-avoid",
-              o.id === bestMatch && "ring-2 ring-primary",
-              o.status === "unavailable" && "opacity-60",
-            )}
-          >
-            <CardHeader className="space-y-2">
-              {o.id === bestMatch && <BestMatchBadge />}
-              <CardTitle className="text-xl">{o.name}</CardTitle>
-              {o.statusNote && <p className="text-sm text-muted-foreground">{o.statusNote}</p>}
-            </CardHeader>
-            <CardContent>
-              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-base">
+      <div className="grid gap-5 lg:hidden print:hidden">
+        {options.map((o) => {
+          const isBest = o.id === bestMatch;
+          return (
+            <article
+              key={o.id}
+              aria-label={o.name}
+              className={cn(
+                "print-break-avoid overflow-hidden rounded-2xl border bg-card shadow-sm",
+                isBest && "border-primary ring-2 ring-primary",
+                o.status === "warning" && "border-destructive/40",
+                o.status === "unavailable" && "bg-muted/50 shadow-none",
+              )}
+            >
+              <header
+                className={cn(
+                  "space-y-2 px-4 pt-5 pb-4 sm:px-5",
+                  isBest && "bg-hero text-hero-foreground",
+                )}
+              >
+                {isBest && <BestMatchBadge />}
+                <h3 className={cn("font-heading text-xl font-semibold", o.status === "unavailable" && "text-muted-foreground")}>
+                  {o.name}
+                </h3>
+                {o.status === "unavailable" && o.statusNote && (
+                  <p className="text-sm text-muted-foreground">{o.statusNote}</p>
+                )}
+                {o.status === "warning" && o.statusNote && <WarningNote>{o.statusNote}</WarningNote>}
+              </header>
+              <dl className={cn("grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-x-3 gap-y-2.5 px-4 py-4 text-base sm:grid-cols-[auto_1fr] sm:gap-x-4 sm:px-5", o.status === "unavailable" && "text-muted-foreground")}>
                 {ROWS.map((row) => (
                   <div key={row.label} className="contents">
                     <dt className="text-muted-foreground">{row.label}</dt>
-                    <dd className={cn(row.emphasis && "font-heading text-xl font-semibold")}>{row.render(o)}</dd>
+                    <dd
+                      className={cn(
+                        "min-w-0 break-words",
+                        row.emphasis && "font-heading text-xl font-semibold",
+                        row.emphasis && isBest && "text-primary",
+                      )}
+                    >
+                      {row.render(o)}
+                    </dd>
                   </div>
                 ))}
               </dl>
-            </CardContent>
-            {o.status !== "unavailable" && (
-              <CardFooter>
-                <PlanButton option={o} />
-              </CardFooter>
-            )}
-          </Card>
-        ))}
+              {o.status !== "unavailable" && (
+                <div className="border-t px-4 py-4 sm:px-5">
+                  <PlanButton option={o} isBest={isBest} />
+                </div>
+              )}
+            </article>
+          );
+        })}
       </div>
     </>
   );

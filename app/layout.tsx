@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Source_Sans_3, Source_Serif_4, Geist_Mono } from "next/font/google";
+import { Manrope, Source_Serif_4, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SnapshotProvider } from "@/lib/state/SnapshotContext";
 import "./globals.css";
 
-const sans = Source_Sans_3({
+// Manrope: modern and crisp for body and small text, still very legible at 18px.
+const sans = Manrope({
   variable: "--font-sans",
   subsets: ["latin"],
 });

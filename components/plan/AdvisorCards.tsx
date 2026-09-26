@@ -1,5 +1,4 @@
-import { Briefcase, Calculator, Landmark, Scale } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Briefcase, Calculator, Landmark, Lightbulb, Scale } from "lucide-react";
 import type { OptionId } from "@/lib/engine/types";
 
 const ADVISORS = [
@@ -27,23 +26,31 @@ const ADVISORS = [
 
 export function AdvisorCards({ option }: { option: OptionId }) {
   return (
-    <div className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <div className="space-y-5 print:space-y-2">
+      <ul className="grid gap-5 sm:grid-cols-2 print:gap-2">
         {ADVISORS.map((a) => (
-          <Card key={a.title} className="print-break-avoid">
-            <CardHeader className="flex flex-row items-center gap-3">
-              <a.icon className="size-6 text-primary" aria-hidden />
-              <CardTitle className="text-lg">{a.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-base text-muted-foreground">{a.body}</CardContent>
-          </Card>
+          <li
+            key={a.title}
+            className="print-break-avoid flex gap-4 rounded-2xl border bg-card p-6 shadow-sm print:rounded-none print:border-0 print:p-0 print:shadow-none"
+          >
+            <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary text-secondary-foreground print:hidden">
+              <a.icon className="size-6" aria-hidden />
+            </span>
+            <div className="space-y-1.5 print:space-y-0">
+              <h3 className="font-heading text-xl leading-snug font-semibold print:text-base">{a.title}</h3>
+              <p className="text-base leading-relaxed text-muted-foreground print:text-sm">{a.body}</p>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
       {option === "eot" && (
-        <p className="rounded-lg bg-secondary px-4 py-3 text-base text-secondary-foreground">
-          <strong>Selling to employees:</strong> Employee Ownership Trusts are new in Canada. Ask each advisor
-          whether they have done an EOT sale before.
-        </p>
+        <div className="print-break-avoid flex gap-4 rounded-2xl border border-primary/25 bg-secondary p-6 text-secondary-foreground print:rounded-none print:border-0 print:border-l-4 print:bg-transparent print:py-1 print:pl-3">
+          <Lightbulb className="mt-0.5 size-6 shrink-0 text-primary print:hidden" aria-hidden />
+          <p className="text-base leading-relaxed">
+            <strong className="font-semibold">Selling to employees:</strong> Employee Ownership Trusts are new in
+            Canada. Ask each advisor whether they have done an EOT sale before.
+          </p>
+        </div>
       )}
     </div>
   );

@@ -1,56 +1,57 @@
 "use client";
 
-import Link from "next/link";
 import { AssumptionsExpander } from "@/components/layout/AssumptionsExpander";
 import { Disclaimer } from "@/components/layout/Disclaimer";
 import { NeedsSnapshot } from "@/components/layout/NeedsSnapshot";
-import { PageIntro } from "@/components/layout/PageIntro";
-import { PlaceholderBadge } from "@/components/layout/Placeholder";
+import { PageHero, heroButtonClass } from "@/components/layout/PageHero";
 import { PrintButton } from "@/components/layout/PrintButton";
 import { runEngine } from "@/lib/engine";
-import type { Results, Snapshot } from "@/lib/engine/types";
-import { formatMoney } from "@/lib/format";
+import type { Snapshot } from "@/lib/engine/types";
 import { useSnapshot } from "@/lib/state/SnapshotContext";
 import { AfterTaxChart } from "./AfterTaxChart";
 import { EotCheck } from "./EotCheck";
+import { FacetField, Sheet } from "./FacetField";
+import { KeyFigures } from "./KeyFigures";
 import { OptionsTable } from "./OptionsTable";
 import { ReadinessSection } from "./ReadinessSection";
+import { SectionNav, type NavSection } from "./SectionNav";
 import { ValueRange } from "./ValueRange";
 
-const SECTIONS = [
+const SECTIONS: NavSection[] = [
   { id: "options", label: "Exit options" },
   { id: "readiness", label: "Readiness" },
   { id: "value", label: "Value" },
   { id: "eot", label: "Selling to employees" },
 ];
 
-function Section({ id, title, intro, children }: { id: string; title: string; intro?: string; children: React.ReactNode }) {
+/** Section whose heading sits directly on the green facet field (white serif title, mint eyebrow). */
+function Section({
+  id,
+  eyebrow,
+  title,
+  intro,
+  children,
+}: {
+  id: string;
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-24 space-y-6 border-t py-12">
-      <div className="space-y-2">
-        <h2 id={`${id}-title`} className="text-2xl font-semibold sm:text-3xl">
+    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-24 space-y-8 pt-20 first:pt-14 print:space-y-3 print:pt-6">
+      <div className="max-w-3xl space-y-3 print:space-y-1">
+        <p className="text-sm font-semibold tracking-[0.12em] text-highlight uppercase print:text-primary">{eyebrow}</p>
+        <h2
+          id={`${id}-title`}
+          className="text-3xl font-semibold text-hero-foreground sm:text-4xl print:text-2xl print:text-foreground"
+        >
           {title}
         </h2>
-        {intro && <p className="max-w-2xl text-lg text-muted-foreground">{intro}</p>}
+        {intro && <p className="text-lg leading-relaxed text-hero-muted print:text-muted-foreground">{intro}</p>}
       </div>
       {children}
     </section>
-  );
-}
-
-/** One-line headline comparing the best match to selling to an outside buyer. */
-function Headline({ results }: { results: Results }) {
-  const best = results.options.find((o) => o.id === results.bestMatch);
-  const outside = results.options.find((o) => o.id === "canadian");
-  if (!best || best.afterTax === undefined || !outside?.afterTax || best.id === "canadian") return null;
-  const diff = best.afterTax - outside.afterTax;
-  if (diff <= 0) return null;
-  return (
-    <p className="rounded-xl bg-secondary px-6 py-5 text-xl leading-relaxed text-secondary-foreground">
-      <strong>{best.name}</strong> could leave you about{" "}
-      <strong className="font-heading text-2xl">{formatMoney(diff)} more</strong> than selling to an outside
-      buyer.
-    </p>
   );
 }
 
@@ -60,57 +61,79 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
   const name = snapshot.businessName || "your business";
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <div className="flex flex-wrap items-end justify-between gap-6 pb-8">
-        <PageIntro eyebrow={isDemo ? "Example" : "Your results"} title={`Exit options for ${name}`}>
-          Every realistic way to step away, side by side, with what you&apos;d keep after tax.
-        </PageIntro>
-        <div className="flex items-center gap-3">
-          <PlaceholderBadge phase={1} />
-          <PrintButton />
+    <>
+      <PageHero
+        eyebrow={isDemo ? "Example" : "Your results"}
+        title={`Exit options for ${name}`}
+        actions={<PrintButton className={heroButtonClass.outline} />}
+      >
+        Every realistic way to step away, side by side, with what you&apos;d keep after tax.
+      </PageHero>
+
+      <KeyFigures results={results} />
+
+      <SectionNav sections={SECTIONS} />
+
+      {/* Faceted green field; beige sheets float on it for the dense reading. Negative bottom margin lets the
+          green run into the footer's top margin so there's no beige strip before the dark footer. */}
+      <FacetField className="-mb-16 print:mb-0">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-band to-transparent print:hidden" />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-band to-transparent print:hidden" />
+
+        <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 print:px-0 print:pb-0">
+          <Section
+            id="options"
+            eyebrow="Compare"
+            title="Your exit options"
+            intro="Price, tax and what you keep — plus what happens to your people and how long it takes."
+          >
+            <Sheet className="space-y-6">
+              <Disclaimer />
+              <OptionsTable options={results.options} bestMatch={results.bestMatch} />
+              <p className="text-base text-muted-foreground">
+                Selling to employees? You may also be able to use your lifetime exemption — ask your accountant.
+              </p>
+            </Sheet>
+            <AfterTaxChart options={results.options} bestMatch={results.bestMatch} />
+          </Section>
+
+          <Section
+            id="readiness"
+            eyebrow="Readiness"
+            title="How ready is your business to sell?"
+            intro="Buyers pay more for a business that runs well without its owner. Here's where you stand today."
+          >
+            <Sheet>
+              <ReadinessSection readiness={results.readiness} />
+            </Sheet>
+          </Section>
+
+          <Section id="value" eyebrow="Value" title="What your business may be worth">
+            <Sheet>
+              <ValueRange valuation={results.valuation} sde={snapshot.sde} />
+            </Sheet>
+          </Section>
+
+          <Section
+            id="eot"
+            eyebrow="Employee ownership"
+            title="Could you sell to your employees?"
+            intro="Six quick questions about the Employee Ownership Trust rules."
+          >
+            <Sheet>
+              <EotCheck result={results.eot} />
+            </Sheet>
+          </Section>
+
+          <div className="pt-20 print:pt-6">
+            <Sheet className="space-y-4">
+              <AssumptionsExpander />
+              <Disclaimer />
+            </Sheet>
+          </div>
         </div>
-      </div>
-
-      <nav aria-label="Sections" className="no-print sticky top-0 z-10 -mx-4 mb-4 overflow-x-auto bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
-        <ul className="flex gap-2">
-          {SECTIONS.map((s) => (
-            <li key={s.id}>
-              <Link href={`#${s.id}`} className="block rounded-full border px-4 py-2 text-base whitespace-nowrap hover:bg-muted">
-                {s.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <Disclaimer />
-
-      <Section id="options" title="Your exit options">
-        <Headline results={results} />
-        <OptionsTable options={results.options} bestMatch={results.bestMatch} />
-        <AfterTaxChart options={results.options} bestMatch={results.bestMatch} />
-        <p className="text-base text-muted-foreground">
-          Selling to employees? You may also be able to use your lifetime exemption — ask your accountant.
-        </p>
-      </Section>
-
-      <Section id="readiness" title="How ready is your business to sell?" intro="Buyers pay more for a business that runs well without its owner. Here's where you stand today.">
-        <ReadinessSection readiness={results.readiness} />
-      </Section>
-
-      <Section id="value" title="What your business may be worth">
-        <ValueRange valuation={results.valuation} />
-      </Section>
-
-      <Section id="eot" title="Could you sell to your employees?" intro="Six quick questions about the Employee Ownership Trust rules.">
-        <EotCheck result={results.eot} />
-      </Section>
-
-      <div className="space-y-4 border-t pt-12">
-        <AssumptionsExpander />
-        <Disclaimer />
-      </div>
-    </div>
+      </FacetField>
+    </>
   );
 }
 
