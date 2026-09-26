@@ -118,7 +118,7 @@ export function ProductPreview() {
         Example results for a sample business: selling to employees leaves about $4.85 million after tax,
         compared with about $3.89 million from an outside buyer.
       </figcaption>
-      <div aria-hidden className="relative pt-6 pb-10 lg:pt-16 lg:pb-20">
+      <div aria-hidden className="relative pt-6 pb-10 sm:pb-36 lg:pt-16">
         <div className="absolute -top-2 right-0 z-0 hidden rotate-[3deg] sm:block lg:-top-4 lg:-right-10">
           <BarsMock />
         </div>

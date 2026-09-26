@@ -88,10 +88,14 @@ export const LCGE = 1_250_000;
  *  Source: EY Tax Alert 2026 No. 28 — https://www.ey.com/en_ca/technical/tax/tax-alerts/2026/tax-alert-2026-no-28 */
 export const EOT_EXEMPTION = 10_000_000;
 
-/** Approximate 2026 combined top marginal personal income tax rates.
- *  ON (0.5353) is from the build plan; the other values are UNVERIFIED placeholders.
- *  TODO(before demo): verify EVERY value against a current published rate table and cite it here.
- *  Ontario is the demo province and must be right. */
+/** 2026 combined federal + provincial/territorial top marginal personal income tax
+ *  rates on ordinary ("interest and regular") income. Verified 2026-09-26 against:
+ *  KPMG Canada, "Combined Top Marginal Tax Rates For Individuals—2026" (current as
+ *  of June 30, 2026), https://assets.kpmg.com/content/dam/kpmgsites/ca/pdf/services/tax/personal-tables/ca-combined-top-marginal-tax-rates-for-individuals-2026.pdf.coredownload.inline.pdf
+ *  Cross-checked against TaxTips.ca 2026 provincial tax-bracket pages
+ *  (taxtips.ca/taxrates/<prov>.htm) for PE, NT, QC, and NL, all of which matched
+ *  the KPMG figures exactly. Ontario is the demo province and must be right;
+ *  KPMG confirms 0.5353. */
 export const TOP_RATE: Record<Province, number> = {
   ON: 0.5353,
   BC: 0.535,
@@ -101,7 +105,7 @@ export const TOP_RATE: Record<Province, number> = {
   QC: 0.5331,
   NB: 0.525,
   NS: 0.54,
-  PE: 0.5175,
+  PE: 0.53, // was 0.5175; KPMG + TaxTips.ca 2026 both show 53.00%, not ~51.75%
   NL: 0.548,
   YT: 0.48,
   NT: 0.4705,

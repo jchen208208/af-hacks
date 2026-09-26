@@ -15,7 +15,7 @@ function Contours() {
   });
   return (
     <svg className="absolute inset-0 size-full" viewBox="0 0 1000 950" preserveAspectRatio="xMidYMid slice" aria-hidden>
-      <g fill="none" stroke="white" strokeOpacity="0.09" strokeWidth="1.5">
+      <g fill="none" stroke="white" strokeOpacity="0.12" strokeWidth="1.5">
         {lines.map((d) => (
           <path key={d} d={d} />
         ))}
@@ -32,12 +32,12 @@ export function HeroBackdrop() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
       <div
-        className="absolute inset-x-0 bottom-0 h-[52%] overflow-hidden bg-[oklch(0.37_0.065_165)] [clip-path:polygon(0_14%,100%_0,100%_100%,0_100%)] lg:inset-y-0 lg:right-0 lg:left-auto lg:h-auto lg:w-[46%] lg:[clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)]"
+        className="absolute inset-x-0 bottom-0 h-[52%] overflow-hidden bg-[oklch(0.4_0.07_165)] [clip-path:polygon(0_14%,100%_0,100%_100%,0_100%)] lg:inset-y-0 lg:right-0 lg:left-auto lg:h-auto lg:w-[46%] lg:[clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)]"
       >
         {hasPhoto && (
           <>
             <Image src={PHOTO_PATH} alt="" fill sizes="50vw" className="object-cover opacity-40 mix-blend-luminosity" priority />
-            <div className="absolute inset-0 bg-[oklch(0.37_0.065_165)]/60" />
+            <div className="absolute inset-0 bg-[oklch(0.4_0.07_165)]/60" />
           </>
         )}
         <Contours />
