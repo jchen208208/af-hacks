@@ -80,7 +80,7 @@ function ComparisonMock() {
 
 function ReadinessMock() {
   return (
-    <div className="rounded-xl bg-card p-4 text-card-foreground lg:p-5 shadow-2xl ring-1 ring-black/10 [&_figcaption]:text-sm [&_svg]:w-40 lg:[&_svg]:w-44">
+    <div className="rounded-xl bg-card p-4 text-card-foreground shadow-2xl ring-1 ring-black/10 lg:p-5 [&_figcaption]:text-sm [&_svg]:w-40 lg:[&_svg]:w-44">
       <p className="mb-1 text-center text-xs font-semibold tracking-wide text-muted-foreground uppercase">Readiness</p>
       <ReadinessDial score={66} bandLabel="Getting there" />
     </div>
@@ -90,7 +90,7 @@ function ReadinessMock() {
 function BarsMock() {
   const max = Math.max(...BARS.map((b) => b.value));
   return (
-    <div className="w-64 space-y-2.5 lg:w-72 rounded-xl bg-card p-4 text-card-foreground shadow-2xl ring-1 ring-black/10">
+    <div className="w-64 space-y-2.5 rounded-xl bg-card p-4 text-card-foreground shadow-2xl ring-1 ring-black/10 lg:w-72">
       <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">After-tax to you</p>
       {BARS.map((b) => (
         <div key={b.name} className="space-y-1">
@@ -113,18 +113,20 @@ function BarsMock() {
 /** Floating app-screen mockups for the hero's foreground. Decorative; described by a hidden caption. */
 export function ProductPreview() {
   return (
-    // Pulled left into the grid gap (negative left margin) and slightly larger than the column.
-    <figure className="relative mx-auto w-full max-w-xl lg:-ml-6 lg:max-w-none xl:-ml-16">
+    // On large screens the figure widens leftwards into the grid gap (w-auto + negative left margin),
+    // so the mockups sit further left and slightly larger than the grid column.
+    <figure className="relative mx-auto w-full max-w-xl lg:mr-0 lg:-ml-4 lg:w-auto lg:max-w-none xl:-ml-20">
       <figcaption className="sr-only">
         Example results for a sample business: selling to employees leaves about $4.85 million after tax,
         compared with about $3.89 million from an outside buyer.
       </figcaption>
       {/* Top padding leaves room for the after-tax card so all its bars show above the main window. */}
-      <div aria-hidden className="relative pt-6 pb-10 sm:pt-36 sm:pb-36 lg:pt-40">
-        <div className="absolute top-0 right-2 z-0 hidden rotate-[3deg] sm:block lg:-top-2 lg:right-0">
+      <div aria-hidden className="relative pt-6 pb-10 sm:pt-40 sm:pb-40 lg:pt-44 lg:pb-44">
+        <div className="absolute top-0 right-2 z-0 hidden rotate-[3deg] sm:block lg:-top-6 lg:right-0">
           <BarsMock />
         </div>
-        <div className="relative z-10 lg:-mr-4 xl:-mr-10">
+        {/* Overhangs the container on the right only as far as the free space beside it allows. */}
+        <div className="relative z-10 lg:-mr-2 xl:-mr-[clamp(0.5rem,calc(50vw-36rem),2.5rem)]">
           <ComparisonMock />
         </div>
         <div className="absolute bottom-0 -left-4 z-20 hidden -rotate-[3deg] sm:block lg:-left-6">

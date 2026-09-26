@@ -22,14 +22,14 @@ const STEPS = [
 export default function LandingPage() {
   return (
     <>
-      <section className={`relative isolate overflow-hidden bg-hero text-hero-foreground`}>
+      <section className="relative isolate overflow-hidden bg-hero text-hero-foreground">
         <HeroBackdrop photoSrc={heroPhotoSrc} />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-12 sm:px-6 lg:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-8 lg:pt-12 lg:pb-14">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-12 sm:px-6 lg:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-8 lg:pt-8 lg:pb-10">
           <div className="space-y-7">
             <h1 className="font-heading text-4xl leading-[1.1] font-semibold text-balance sm:text-5xl xl:text-6xl">
               Your business took decades to build. Plan how it lives on.
             </h1>
-            <p className="max-w-xl text-xl leading-relaxed text-hero-muted">
+            <p className="max-w-xl text-xl leading-relaxed text-hero-muted lg:max-w-[28rem]">
               In 10 minutes: what your business is worth, how ready it is to sell, and every way to exit —
               including selling to your own employees tax-free.
             </p>

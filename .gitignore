@@ -42,5 +42,6 @@ next-env.d.ts
 
 # planning docs (local only)
 handover-build-plan.md
+WORKING-STATE.md
 
 !.env.example
