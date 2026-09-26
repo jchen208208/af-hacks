@@ -121,15 +121,15 @@ export function ProductPreview() {
         compared with about $3.89 million from an outside buyer.
       </figcaption>
       {/* Top padding leaves room for the after-tax card so all its bars show above the main window. */}
-      <div aria-hidden className="relative pt-6 pb-10 sm:pt-40 sm:pb-40 lg:pt-44 lg:pb-44">
-        <div className="absolute top-0 right-2 z-0 hidden rotate-[3deg] sm:block lg:-top-6 lg:right-0">
+      <div aria-hidden className="relative pt-6 pb-10 sm:translate-x-5 sm:pt-40 sm:pb-40 lg:pt-44 lg:pb-44">
+        <div className="absolute top-8 right-2 z-0 hidden rotate-[3deg] sm:block lg:top-2 lg:right-0">
           <BarsMock />
         </div>
         {/* Overhangs the container on the right only as far as the free space beside it allows. */}
-        <div className="relative z-10 lg:-mr-2 xl:-mr-[clamp(0.5rem,calc(50vw-36rem),2.5rem)]">
+        <div className="relative z-10 sm:translate-x-4 sm:scale-[1.04]lg:-mr-2 xl:-mr-[clamp(0.5rem,calc(50vw-36rem),2.5rem)]">
           <ComparisonMock />
         </div>
-        <div className="absolute bottom-0 -left-4 z-20 hidden -rotate-[3deg] sm:block lg:-left-6">
+        <div className="absolute bottom-0 -left-1 z-20 hidden -rotate-[5deg] sm:block lg:-left-2">
           <ReadinessMock />
         </div>
       </div>
