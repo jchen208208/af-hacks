@@ -2,7 +2,7 @@
 // The UI only ever calls these two functions.
 
 import { checkEot } from "./eot";
-import { computeOptions, pickBestMatch } from "./options";
+import { computeOptions, rankOptions } from "./options";
 import { placeholderPlanSteps } from "./placeholder";
 import { computeReadiness } from "./readiness";
 import type { EotAnswers, OptionId, PlanStep, Results, Snapshot } from "./types";
@@ -12,8 +12,9 @@ export function runEngine(snapshot: Snapshot, eotAnswers: EotAnswers): Results {
   const readiness = computeReadiness(snapshot);
   const valuation = computeValuation(snapshot, readiness.score);
   const eot = checkEot(eotAnswers);
-  const options = computeOptions(snapshot, readiness, valuation, eot);
-  const bestMatch = pickBestMatch(snapshot, options);
+  // Ranked best match first, so the comparison reads left to right (top to bottom on phones).
+  const options = rankOptions(snapshot, computeOptions(snapshot, readiness, valuation, eot));
+  const bestMatch = options[0].id;
   return { readiness, valuation, eot, options, bestMatch };
 }
 

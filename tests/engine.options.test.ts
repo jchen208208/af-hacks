@@ -8,14 +8,11 @@ const option = (s: Snapshot, id: OptionId, answers = FRANK_EOT_ANSWERS) =>
   runEngine(s, answers).options.find((o) => o.id === id) as ExitOption;
 
 describe("exit options", () => {
-  it("lists the five options in plan order", () => {
-    expect(runEngine(FRANK, FRANK_EOT_ANSWERS).options.map((o) => o.id)).toEqual([
-      "family",
-      "canadian",
-      "pe",
-      "eot",
-      "winddown",
-    ]);
+  it("ranks the options best match first, then wind-down, then unavailable", () => {
+    // Frank: EOT 15 · Canadian 7 · PE 2; family has no successor.
+    const results = runEngine(FRANK, FRANK_EOT_ANSWERS);
+    expect(results.options.map((o) => o.id)).toEqual(["eot", "canadian", "pe", "winddown", "family"]);
+    expect(results.bestMatch).toBe(results.options[0].id);
   });
 
   it("hides private equity numbers unless SDE >= $1M and readiness >= 60", () => {

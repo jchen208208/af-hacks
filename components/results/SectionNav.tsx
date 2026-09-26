@@ -60,7 +60,7 @@ export function SectionNav({ sections }: { sections: NavSection[] }) {
   };
 
   return (
-    <nav aria-label="Sections" className="no-print sticky top-0 z-30 border-b border-white/10 bg-band/90 shadow-[0_8px_24px_-12px_rgb(0_0_0/0.5)] backdrop-blur-md">
+    <nav aria-label="Sections" className="no-print sticky top-0 z-30 border-y border-white/10 bg-band shadow-[0_8px_24px_-12px_rgb(0_0_0/0.5)]">
       <ul className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 py-3 sm:px-6">
         {sections.map((s) => {
           const isActive = s.id === active;

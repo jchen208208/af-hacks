@@ -41,10 +41,16 @@ function PlanButton({ option, isBest }: { option: ExitOption; isBest: boolean })
   );
 }
 
-function BestMatchBadge() {
+function BestMatchBadge({ compact = false }: { compact?: boolean }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-highlight px-2.5 py-1 font-sans text-sm font-semibold whitespace-nowrap text-hero print:border print:border-primary print:bg-transparent print:text-primary">
-      <Star className="size-3.5 fill-current" aria-hidden /> Best match for you
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full bg-highlight py-1 font-sans font-semibold text-hero print:border print:border-primary print:bg-transparent print:text-primary",
+        // Compact: for the narrow table column — smaller type, and it borrows the cell's side padding.
+        compact ? "-mx-2 justify-center gap-1 px-2 text-center text-xs leading-tight" : "gap-1.5 px-3 text-sm whitespace-nowrap",
+      )}
+    >
+      <Star className={cn("shrink-0 fill-current", compact ? "size-3" : "size-3.5")} aria-hidden /> Best match for you
     </span>
   );
 }
@@ -86,7 +92,11 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
                   >
                     <div className="space-y-2">
                       <div>{o.name}</div>
-                      {isBest && <BestMatchBadge />}
+                      {isBest && (
+                        <div className="flex justify-center">
+                          <BestMatchBadge compact />
+                        </div>
+                      )}
                       {o.status === "unavailable" && o.statusNote && (
                         <div className="font-sans text-sm font-normal">{o.statusNote}</div>
                       )}

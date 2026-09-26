@@ -170,15 +170,25 @@ export function scoreOptions(snapshot: Snapshot, candidates: ExitOption[]): Map<
   return scores;
 }
 
-export function pickBestMatch(snapshot: Snapshot, options: ExitOption[]): OptionId {
+/**
+ * Options in the order to show them, best match first: viable sale options by score, then
+ * wind-down, then unavailable options (display order).
+ */
+export function rankOptions(snapshot: Snapshot, options: ExitOption[]): ExitOption[] {
   const viable = options.filter((o) => o.status !== "unavailable");
+  // Never rank wind-down above a sale option; it only comes first when it's the only viable option.
   const sales = viable.filter((o) => o.id !== "winddown");
-  // Never highlight wind-down unless it's the only viable option.
-  if (sales.length === 0) return "winddown";
+  const windDown = viable.filter((o) => o.id === "winddown");
+  const unavailable = options.filter((o) => o.status === "unavailable");
 
   const scores = scoreOptions(snapshot, sales);
-  // Highest score wins; ties go to more after-tax money, then display order.
-  return [...sales].sort(
+  // Highest score first; ties go to more after-tax money, then display order (stable sort).
+  const rankedSales = [...sales].sort(
     (a, b) => (scores.get(b.id) ?? 0) - (scores.get(a.id) ?? 0) || (b.afterTax ?? 0) - (a.afterTax ?? 0),
-  )[0].id;
+  );
+  return [...rankedSales, ...windDown, ...unavailable];
+}
+
+export function pickBestMatch(snapshot: Snapshot, options: ExitOption[]): OptionId {
+  return rankOptions(snapshot, options)[0]?.id ?? "winddown";
 }

@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 
 // Example values for the demo persona (plan section 8). Illustration only — not engine output.
 const COLUMNS = [
-  { name: "Canadian buyer", price: 4_849_200, tax: 963_299, afterTax: 3_885_901, jobs: "Usually kept" },
   { name: "Your employees", price: 4_849_200, tax: 0, afterTax: 4_849_200, jobs: "Kept, and they become owners", best: true },
+  { name: "Canadian buyer", price: 4_849_200, tax: 963_299, afterTax: 3_885_901, jobs: "Usually kept" },
   { name: "Private equity", price: 5_334_120, tax: 1_093_088, afterTax: 4_241_032, jobs: "At risk" },
 ];
 
@@ -14,7 +14,7 @@ const BARS = [
   { name: "Employees (EOT)", value: 4_849_200, best: true },
   { name: "Private equity", value: 4_241_032 },
   { name: "Canadian buyer", value: 3_885_901 },
-  { name: "Wind down", value: 540_000 },
+  { name: "Wind down", value: 395_496 }, // after tax, like the other bars ($540K sale − ≈$144K tax)
 ];
 
 function WindowChrome({ title, className, children }: { title: string; className?: string; children: React.ReactNode }) {
