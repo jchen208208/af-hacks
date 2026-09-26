@@ -17,7 +17,8 @@ const SHORT_NAMES: Record<OptionId, string> = {
 export function AfterTaxChart({ options, bestMatch }: { options: ExitOption[]; bestMatch: OptionId }) {
   const data = options
     .filter((o) => o.afterTax !== undefined && o.status !== "unavailable")
-    .map((o) => ({ id: o.id, name: SHORT_NAMES[o.id], afterTax: o.afterTax as number }))
+    // Not `id`: Recharts copies data fields onto the bar <path>, which would clash with the page's #eot section.
+    .map((o) => ({ optionId: o.id, name: SHORT_NAMES[o.id], afterTax: o.afterTax as number }))
     .sort((a, b) => b.afterTax - a.afterTax);
 
   return (
@@ -47,7 +48,7 @@ export function AfterTaxChart({ options, bestMatch }: { options: ExitOption[]; b
             />
             <Bar dataKey="afterTax" radius={[0, 8, 8, 0]} barSize={30} isAnimationActive={false}>
               {data.map((d) => (
-                <Cell key={d.id} fill={d.id === bestMatch ? "var(--chart-1)" : "var(--chart-3)"} />
+                <Cell key={d.optionId} fill={d.optionId === bestMatch ? "var(--chart-1)" : "var(--chart-3)"} />
               ))}
               <LabelList
                 dataKey="afterTax"

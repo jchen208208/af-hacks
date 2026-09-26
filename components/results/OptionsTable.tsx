@@ -43,7 +43,7 @@ function PlanButton({ option, isBest }: { option: ExitOption; isBest: boolean })
 
 function BestMatchBadge() {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-highlight px-3 py-1 font-sans text-sm font-semibold text-hero print:border print:border-primary print:bg-transparent print:text-primary">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-highlight px-2.5 py-1 font-sans text-sm font-semibold whitespace-nowrap text-hero print:border print:border-primary print:bg-transparent print:text-primary">
       <Star className="size-3.5 fill-current" aria-hidden /> Best match for you
     </span>
   );
@@ -85,8 +85,8 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
                     )}
                   >
                     <div className="space-y-2">
-                      {isBest && <BestMatchBadge />}
                       <div>{o.name}</div>
+                      {isBest && <BestMatchBadge />}
                       {o.status === "unavailable" && o.statusNote && (
                         <div className="font-sans text-sm font-normal">{o.statusNote}</div>
                       )}
@@ -162,10 +162,10 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
                   isBest && "bg-hero text-hero-foreground",
                 )}
               >
-                {isBest && <BestMatchBadge />}
                 <h3 className={cn("font-heading text-xl font-semibold", o.status === "unavailable" && "text-muted-foreground")}>
                   {o.name}
                 </h3>
+                {isBest && <BestMatchBadge />}
                 {o.status === "unavailable" && o.statusNote && (
                   <p className="text-sm text-muted-foreground">{o.statusNote}</p>
                 )}

@@ -24,7 +24,7 @@ const SECTIONS: NavSection[] = [
   { id: "eot", label: "Selling to employees" },
 ];
 
-/** Section whose heading sits directly on the green facet field (white serif title, mint eyebrow). */
+/** One section of the continuous results sheet; siblings are split by the sheet's dividers. */
 function Section({
   id,
   eyebrow,
@@ -39,16 +39,17 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-24 space-y-8 pt-20 first:pt-14 print:space-y-3 print:pt-6">
+    <section
+      id={id}
+      aria-labelledby={`${id}-title`}
+      className="scroll-mt-20 space-y-8 py-12 first:pt-2 sm:py-16 sm:first:pt-2 print:space-y-3 print:py-6"
+    >
       <div className="max-w-3xl space-y-3 print:space-y-1">
-        <p className="text-sm font-semibold tracking-[0.12em] text-highlight uppercase print:text-primary">{eyebrow}</p>
-        <h2
-          id={`${id}-title`}
-          className="text-3xl font-semibold text-hero-foreground sm:text-4xl print:text-2xl print:text-foreground"
-        >
+        <p className="text-sm font-semibold tracking-[0.12em] text-primary uppercase">{eyebrow}</p>
+        <h2 id={`${id}-title`} className="text-3xl font-semibold sm:text-4xl print:text-2xl">
           {title}
         </h2>
-        {intro && <p className="text-lg leading-relaxed text-hero-muted print:text-muted-foreground">{intro}</p>}
+        {intro && <p className="text-lg leading-relaxed text-muted-foreground">{intro}</p>}
       </div>
       {children}
     </section>
@@ -80,57 +81,50 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-band to-transparent print:hidden" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-band to-transparent print:hidden" />
 
-        <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 print:px-0 print:pb-0">
-          <Section
-            id="options"
-            eyebrow="Compare"
-            title="Your exit options"
-            intro="Price, tax and what you keep — plus what happens to your people and how long it takes."
-          >
-            <Sheet className="space-y-6">
+        <div className="mx-auto max-w-6xl px-4 pt-12 pb-24 sm:px-6 sm:pt-16 print:px-0 print:py-0">
+          {/* One continuous sheet so the four sections read as a single connected page, split only by dividers. */}
+          <Sheet className="divide-y p-5 sm:p-10 lg:p-14">
+            <Section
+              id="options"
+              eyebrow="Compare"
+              title="Your exit options"
+              intro="Price, tax and what you keep — plus what happens to your people and how long it takes."
+            >
               <Disclaimer />
               <OptionsTable options={results.options} bestMatch={results.bestMatch} />
               <p className="text-base text-muted-foreground">
                 Selling to employees? You may also be able to use your lifetime exemption — ask your accountant.
               </p>
-            </Sheet>
-            <AfterTaxChart options={results.options} bestMatch={results.bestMatch} />
-          </Section>
+              <AfterTaxChart options={results.options} bestMatch={results.bestMatch} />
+            </Section>
 
-          <Section
-            id="readiness"
-            eyebrow="Readiness"
-            title="How ready is your business to sell?"
-            intro="Buyers pay more for a business that runs well without its owner. Here's where you stand today."
-          >
-            <Sheet>
+            <Section
+              id="readiness"
+              eyebrow="Readiness"
+              title="How ready is your business to sell?"
+              intro="Buyers pay more for a business that runs well without its owner. Here's where you stand today."
+            >
               <ReadinessSection readiness={results.readiness} />
-            </Sheet>
-          </Section>
+            </Section>
 
-          <Section id="value" eyebrow="Value" title="What your business may be worth">
-            <Sheet>
+            <Section id="value" eyebrow="Value" title="What your business may be worth">
               <ValueRange valuation={results.valuation} sde={snapshot.sde} />
-            </Sheet>
-          </Section>
+            </Section>
 
-          <Section
-            id="eot"
-            eyebrow="Employee ownership"
-            title="Could you sell to your employees?"
-            intro="Six quick questions about the Employee Ownership Trust rules."
-          >
-            <Sheet>
+            <Section
+              id="eot"
+              eyebrow="Employee ownership"
+              title="Could you sell to your employees?"
+              intro="Six quick questions about the Employee Ownership Trust rules."
+            >
               <EotCheck result={results.eot} />
-            </Sheet>
-          </Section>
+            </Section>
 
-          <div className="pt-20 print:pt-6">
-            <Sheet className="space-y-4">
+            <div className="space-y-4 pt-12 sm:pt-16 print:pt-6">
               <AssumptionsExpander />
               <Disclaimer />
-            </Sheet>
-          </div>
+            </div>
+          </Sheet>
         </div>
       </FacetField>
     </>
