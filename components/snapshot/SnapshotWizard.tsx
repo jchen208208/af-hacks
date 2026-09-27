@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,8 +18,13 @@ const STEP_INTROS = [
 ];
 
 export function SnapshotWizard() {
-  const { draft, update, step, setStep, hydrated, loadDemo, isDemo } = useSnapshot();
+  const { draft, update, step, setStep, hydrated, fillExample, draftIsExample, exitDemo } = useSnapshot();
   const router = useRouter();
+
+  // Opening the wizard means the owner is working on their own plan, so stop showing the example.
+  useEffect(() => {
+    if (hydrated) exitDemo();
+  }, [hydrated, exitDemo]);
 
   if (!hydrated) {
     return <div className="h-[32rem] animate-pulse rounded-2xl border bg-card shadow-sm" aria-busy />;
@@ -51,7 +57,7 @@ export function SnapshotWizard() {
   return (
     <div className="space-y-5">
       <div className="rounded-2xl border bg-card shadow-sm">
-        <div className="flex flex-col gap-4 border-b px-5 pt-12 pb-7 sm:flex-row sm:items-start sm:justify-between sm:px-10 sm:pt-16 sm:pb-9">
+        <div className="flex flex-col gap-4 border-b px-5 pt-8 pb-7 sm:flex-row sm:items-start sm:justify-between sm:px-10 sm:pt-10 sm:pb-9">
           <div className="space-y-3">
             <p className="text-sm font-bold tracking-[0.12em] text-primary uppercase">
               Step {step + 1} of {STEPS.length}
@@ -61,11 +67,11 @@ export function SnapshotWizard() {
           </div>
           <button
             type="button"
-            onClick={loadDemo}
+            onClick={fillExample}
             className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-primary/25 bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition-colors hover:border-primary/50 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
           >
             <Sparkles className="size-4" aria-hidden />
-            {isDemo ? "Example loaded" : "Fill with an example"}
+            {draftIsExample ? "Example loaded" : "Fill with an example"}
           </button>
         </div>
 

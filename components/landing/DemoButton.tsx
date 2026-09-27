@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useSnapshot } from "@/lib/state/SnapshotContext";
 
-/** Loads the demo persona (Frank) in one click and jumps to the results (plan 4.7). */
+/** Shows the demo persona's (Frank's) results in one click (plan 4.7). The owner's own answers are left alone. */
 export function DemoButton({
   children = "See an example",
   className,
@@ -14,7 +14,7 @@ export function DemoButton({
   className?: string;
   variant?: React.ComponentProps<typeof Button>["variant"];
 }) {
-  const { loadDemo } = useSnapshot();
+  const { viewDemo } = useSnapshot();
   const router = useRouter();
   return (
     <Button
@@ -22,7 +22,7 @@ export function DemoButton({
       variant={variant}
       className={className}
       onClick={() => {
-        loadDemo();
+        viewDemo();
         router.push("/results");
       }}
     >

@@ -10,15 +10,13 @@ export default function SnapshotPage() {
       <PageHero
         eyebrow="Business Snapshot"
         title="Tell us about your business"
-        className="pb-6 sm:pb-8"
         actions={<SnapshotStepper />}
       >
         About 20 questions in plain language, in four short steps. No documents needed.
       </PageHero>
 
-      {/* The card only tucks under the hero's bottom edge by its top padding, so the card header text
-          always sits on the white surface, clearly below the green. */}
-      <div className="relative z-10 mx-auto -mt-6 max-w-4xl px-4 sm:-mt-8 sm:px-6">
+      {/* The card sits fully on the beige page background, below the green hero. */}
+      <div className="mx-auto mt-10 max-w-4xl px-4 sm:mt-12 sm:px-6">
         <SnapshotWizard />
       </div>
     </>

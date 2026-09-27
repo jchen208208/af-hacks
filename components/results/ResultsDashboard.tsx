@@ -57,14 +57,14 @@ function Section({
 }
 
 function Dashboard({ snapshot }: { snapshot: Snapshot }) {
-  const { eotAnswers, isDemo } = useSnapshot();
+  const { eotAnswers, showingExample } = useSnapshot();
   const results = runEngine(snapshot, eotAnswers);
   const name = snapshot.businessName || "your business";
 
   return (
     <>
       <PageHero
-        eyebrow={isDemo ? "Example" : "Your results"}
+        eyebrow={showingExample ? "Example" : "Your results"}
         title={`Exit options for ${name}`}
         actions={<PrintButton className={heroButtonClass.outline} />}
       >
