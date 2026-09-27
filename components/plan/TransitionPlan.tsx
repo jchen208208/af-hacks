@@ -7,11 +7,11 @@ import { AssumptionsExpander } from "@/components/layout/AssumptionsExpander";
 import { Disclaimer } from "@/components/layout/Disclaimer";
 import { NeedsSnapshot } from "@/components/layout/NeedsSnapshot";
 import { PageHero, heroButtonClass } from "@/components/layout/PageHero";
-import { PlaceholderBadge } from "@/components/layout/Placeholder";
 import { PrintButton } from "@/components/layout/PrintButton";
 import { runEngine, runPlan } from "@/lib/engine";
 import type { ExitOption, OptionId, Snapshot } from "@/lib/engine/types";
 import { formatMoney } from "@/lib/format";
+import { planSummary } from "@/lib/narrative/template";
 import { useSnapshot } from "@/lib/state/SnapshotContext";
 import { cn } from "@/lib/utils";
 import { AdvisorCards } from "./AdvisorCards";
@@ -40,11 +40,14 @@ function SectionHeading({ id, eyebrow, title }: { id: string; eyebrow: string; t
 
 /** Dark band of key facts for the chosen option, in the landing stats style. */
 function KeyFacts({ option }: { option: ExitOption }) {
+  // Unavailable options have no numbers: say so plainly (the note below says why) instead of a bare dash.
+  const { afterTax } = option;
+  const estimated = afterTax !== undefined;
   const facts = [
     {
-      value: option.afterTax !== undefined ? formatMoney(option.afterTax) : "—",
-      label: "estimated after tax to you",
-      big: true,
+      value: estimated ? formatMoney(afterTax) : "Not estimated",
+      label: estimated ? "estimated after tax to you" : "after tax to you — see the note below",
+      big: estimated,
     },
     { value: option.time, label: "time to complete" },
     { value: option.employees, label: "what happens to your employees" },
@@ -87,19 +90,17 @@ function KeyFacts({ option }: { option: ExitOption }) {
 function PlanBody({ option, snapshot }: { option: OptionId; snapshot: Snapshot }) {
   const { eotAnswers } = useSnapshot();
   const results = runEngine(snapshot, eotAnswers);
-  const steps = runPlan(option, snapshot);
+  const steps = runPlan(option, snapshot, eotAnswers);
   const chosen = results.options.find((o) => o.id === option);
 
-  // TODO(Phase 4): template summary built from engine output; Phase 6 swaps in the AI narrative.
-  const summary = chosen?.afterTax
-    ? `Based on your answers, ${PLAN_TITLES[option]} could leave you with about ${formatMoney(chosen.afterTax)} after tax. Your readiness score is ${results.readiness.score} out of 100, so the first steps below focus on the changes that will make the biggest difference to buyers.`
-    : `This plan walks you through ${PLAN_TITLES[option]}, starting with the changes that will make the biggest difference.`;
+  // Template summary from engine output (Phase 6 can swap in the AI narrative, keeping this as the fallback).
+  const summary = planSummary(option, snapshot, results);
 
   return (
     <>
       <PageHero
         eyebrow="Transition plan"
-        title={`Your plan: ${PLAN_TITLES[option]}`}
+        title={<span className="print:block print:text-3xl">Your plan: {PLAN_TITLES[option]}</span>}
         actions={
           <>
             <Button asChild variant="ghost" size="xl" className={heroButtonClass.outline}>
@@ -111,7 +112,9 @@ function PlanBody({ option, snapshot }: { option: OptionId; snapshot: Snapshot }
           </>
         }
       >
-        {summary}
+        {/* Title and summary are smaller in print so the plan stays on 2 pages (block so the
+            smaller line height applies instead of the hero's). */}
+        <span className="print:block print:text-base print:leading-snug">{summary}</span>
       </PageHero>
 
       {chosen && <KeyFacts option={chosen} />}
@@ -120,10 +123,7 @@ function PlanBody({ option, snapshot }: { option: OptionId; snapshot: Snapshot }
         <Disclaimer />
 
         <section aria-labelledby="timeline-title" className="space-y-8 print:space-y-3">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading id="timeline-title" eyebrow="Step by step" title="Year by year" />
-            <PlaceholderBadge phase={4} />
-          </div>
+          <SectionHeading id="timeline-title" eyebrow="Your timeline" title="Step by step" />
           <div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8 print:rounded-none print:border-0 print:p-0 print:shadow-none">
             <Timeline steps={steps} />
           </div>
@@ -139,6 +139,7 @@ function PlanBody({ option, snapshot }: { option: OptionId; snapshot: Snapshot }
           <AdvisorCards option={option} />
         </section>
 
+        {/* Screen only: the printed plan stays at 2 pages (the disclaimer still prints). */}
         <div className="print:hidden">
           <AssumptionsExpander />
         </div>

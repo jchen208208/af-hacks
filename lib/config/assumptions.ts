@@ -131,6 +131,22 @@ export const PE_MIN_READINESS = 60;
 /** Best-match weights by priority rank (1st, 2nd, 3rd, 4th). */
 export const PRIORITY_WEIGHTS = [4, 3, 2, 1];
 
+// --- Transition plan (plan 7.6) ---
+
+/** Months from today to closing, by the owner's answer to "when do you want to exit?".
+ *  The plan's steps are spread across this runway. 0 = under a year, 3 = "3–4 years", 5 = "5+". */
+export const PLAN_HORIZON_MONTHS: Record<0 | 1 | 2 | 3 | 5, number> = {
+  0: 9,
+  1: 12,
+  2: 24,
+  3: 42,
+  5: 60,
+};
+
+/** Runways this short (in months) get month labels ("Month 6") and quick-win tips on each fix;
+ *  longer runways get quarter labels ("Year 2, Q3"). */
+export const PLAN_MONTH_LABEL_MAX = 12;
+
 // --- Display ---
 
 /** Money on screen is rounded to the nearest $10K (no false precision). */

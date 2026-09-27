@@ -3,7 +3,7 @@
 
 import { checkEot } from "./eot";
 import { computeOptions, rankOptions } from "./options";
-import { placeholderPlanSteps } from "./placeholder";
+import { buildPlan } from "./plan";
 import { computeReadiness } from "./readiness";
 import type { EotAnswers, OptionId, PlanStep, Results, Snapshot } from "./types";
 import { computeValuation } from "./valuation";
@@ -18,10 +18,8 @@ export function runEngine(snapshot: Snapshot, eotAnswers: EotAnswers): Results {
   return { readiness, valuation, eot, options, bestMatch };
 }
 
-export function runPlan(option: OptionId, snapshot: Snapshot): PlanStep[] {
-  // TODO(Phase 4): buildPlan(option, snapshot, computeReadiness(snapshot)).
-  void snapshot;
-  return placeholderPlanSteps(option);
+export function runPlan(option: OptionId, snapshot: Snapshot, eotAnswers: EotAnswers = {}): PlanStep[] {
+  return buildPlan(option, snapshot, computeReadiness(snapshot), checkEot(eotAnswers).status);
 }
 
 export type * from "./types";

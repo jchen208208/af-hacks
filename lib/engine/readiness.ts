@@ -6,10 +6,10 @@ import type { FactorScore, ReadinessBand, ReadinessFactor, ReadinessFix, Readine
 /** Action-phrased titles for the "Top 3 fixes" cards. */
 const FIX_LABELS: Record<Exclude<ReadinessFactor, "runway">, string> = {
   records: "Get accountant-prepared financial statements",
-  ownerDependence: "Make the business run without you",
-  management: "Develop a second manager",
-  customerConcentration: "Reduce reliance on your biggest customer",
-  processes: "Write down how the work gets done",
+  ownerDependence: "Make the business run without you day to day",
+  management: "Develop a second-in-command",
+  customerConcentration: "Reduce how much you depend on your biggest customer",
+  processes: "Write down how the key jobs get done",
 };
 
 const RUNWAY_LABELS: Record<Snapshot["yearsToExit"], string> = {

@@ -53,9 +53,9 @@ export function Checklist({ option, steps }: { option: OptionId; steps: PlanStep
       <ul className="grid gap-3 print:grid-cols-2 print:gap-x-6 print:gap-y-1">
         {steps.map((step) => (
           <li key={step.id}>
-            <label className="group flex cursor-pointer items-start gap-4 rounded-xl border bg-card px-5 py-4 text-base shadow-sm transition-colors hover:border-primary/40 has-focus-visible:ring-3 has-focus-visible:ring-ring/50 has-data-[state=checked]:border-primary/30 has-data-[state=checked]:bg-secondary print:rounded-none print:border-0 print:bg-transparent print:px-0 print:py-1 print:shadow-none">
+            <label className="group flex cursor-pointer items-start gap-4 rounded-xl border bg-card px-5 py-4 text-base shadow-sm transition-colors hover:border-primary/40 has-focus-visible:ring-3 has-focus-visible:ring-ring/50 has-data-[state=checked]:border-primary/30 has-data-[state=checked]:bg-secondary print:gap-2.5 print:rounded-none print:border-0 print:bg-transparent print:px-0 print:py-0.5 print:text-sm print:shadow-none">
               <Checkbox
-                className="mt-0.5 size-6 rounded-md border-2 [&_svg]:size-4"
+                className="mt-0.5 size-6 rounded-md border-2 [&_svg]:size-4 print:mt-0 print:size-4 print:rounded-sm"
                 checked={!!done[step.id]}
                 onCheckedChange={(c) => toggle(step.id, c === true)}
               />
