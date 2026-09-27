@@ -30,9 +30,8 @@ export default function LandingPage() {
               Thinking about retiring? See what you&apos;d actually walk away with.
             </h1>
             <p className="max-w-xl text-xl leading-relaxed text-hero-muted lg:max-w-[28rem]">
-              In about 10 minutes you&apos;ll know what your business could sell for and how ready it is. You&apos;ll
-              also see what you&apos;d keep after tax from each kind of sale, including selling to your own employees,
-              where up to $10 million of the gain can be tax-free.
+              In about 10 minutes, see what your business could sell for, how ready it is, and what you&apos;d keep
+              after tax from each kind of sale.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button
@@ -71,7 +70,7 @@ export default function LandingPage() {
       <section className="mx-auto max-w-6xl px-4 pt-20 pb-8 sm:px-6">
         <div className="max-w-2xl space-y-3">
           <p className="text-sm font-semibold tracking-wide text-primary uppercase">How it works</p>
-          <h2 className="text-3xl font-semibold sm:text-4xl">You answer the questions. We do the math.</h2>
+          <h2 className="text-3xl font-semibold text-balance sm:text-4xl">You answer the questions. We do the math.</h2>
         </div>
         <ol className="mt-10 grid gap-6 md:grid-cols-3">
           {STEPS.map((step, i) => (

@@ -24,9 +24,9 @@ const mono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Handover — Plan how your business lives on",
+  title: "Handover: see what you'd walk away with when you retire",
   description:
-    "See what your business is worth, how ready it is to sell, and every way to exit — including selling to your employees tax-free.",
+    "Find out what your business could sell for, how ready it is, and what you'd keep after tax from each kind of sale, including selling to your employees.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
