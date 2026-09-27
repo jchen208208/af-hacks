@@ -1,9 +1,9 @@
-// Demo persona (plan section 8): Frank Mancini, 66, Mancini Precision Machining, Guelph ON.
+// Demo persona (plan section 8): Frank Mancini, 66, Frank's Precision Machinery, Guelph ON.
 
 import type { EotAnswers, Snapshot } from "@/lib/engine/types";
 
 export const FRANK: Snapshot = {
-  businessName: "Mancini Precision Machining",
+  businessName: "Frank's Precision Machinery",
   industry: "manufacturing",
   province: "ON",
   yearFounded: 1991,

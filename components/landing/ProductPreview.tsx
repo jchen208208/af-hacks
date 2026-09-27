@@ -41,7 +41,7 @@ function ComparisonMock() {
   return (
     <WindowChrome title="Handover · Exit options">
       <div className="space-y-3 p-4 sm:p-5 lg:p-6">
-        <p className="font-heading text-base font-semibold sm:text-lg">Exit options for Mancini Precision Machining</p>
+        <p className="font-heading text-base font-semibold sm:text-lg">Exit options for Frank&apos;s Precision Machinery</p>
         <div className="grid grid-cols-[5.5rem_repeat(3,1fr)] text-[0.7rem] leading-snug sm:grid-cols-[7rem_repeat(3,1fr)] sm:text-xs xl:text-[0.8rem]">
           <div />
           {COLUMNS.map((c) => (

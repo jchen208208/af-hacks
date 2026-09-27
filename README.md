@@ -20,17 +20,19 @@ The Business Snapshot is a four-step form with about 20 plain-language questions
 
 The results page shows:
 
-- A readiness score from 0 to 100 across six factors, with the three changes that would raise it most and by how many points.
-- A value range based on profit before the owner's pay, an industry multiple, and the readiness score.
 - Five exit options compared side by side: a family successor, a Canadian buyer, private equity, an Employee Ownership Trust, and winding down. Each shows the price, estimated tax, money kept after tax, when the owner gets paid, what happens to employees, and whether the business stays Canadian-owned. The option that best fits the owner's stated priorities is ranked first.
 - A chart of after-tax money by option.
+- A readiness score from 0 to 100 across six factors.
+- A value range based on profit before the owner's pay, an industry multiple, and the readiness score.
+- The top three changes that would raise the score most, and by how many points.
+- A "What if" section where the owner can change their readiness answers and watch the score, value and after-tax money update live, without changing their saved answers. One button tries their top three fixes. For the example owner, those fixes raise the score from 66 to 90 and add about $390K to what he keeps after tax.
 - An EOT eligibility check with six yes/no questions and a short explanation of how an EOT works.
 
 The transition plan is a timeline and checklist for the chosen option, fitted to how many years the owner has before they want out. It starts with the owner's biggest readiness fixes and lists who to call (CPA, business lawyer, business valuator, BDC). Checklist progress is saved in the browser.
 
 Both the results and the plan print as clean reports, so an owner can bring them to their accountant.
 
-To see everything without filling in the form, click "See an example" on the home page. It loads Frank Mancini, 66, who owns Mancini Precision Machining in Guelph, Ontario, with 22 employees. For Frank, an EOT leaves him about $960K more after tax than selling to an outside buyer, and all 22 jobs stay.
+To see everything without filling in the form, click "See an example" on the home page. It loads Frank Mancini, 66, who owns Frank's Precision Machinery in Guelph, Ontario, with 22 employees. For Frank, an EOT leaves him about $960K more after tax than selling to an outside buyer, and all 22 jobs stay.
 
 ## How the numbers work
 
@@ -75,7 +77,7 @@ Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Rechar
 ```
 app/                 pages: / (landing), /snapshot, /results, /plan
 components/          UI, grouped by page (landing, snapshot, results, plan, report)
-lib/engine/          readiness, valuation, tax, exit options, EOT check, plan builder
+lib/engine/          readiness, valuation, tax, exit options, EOT check, plan builder, what-if scenarios
 lib/config/          every number the engine uses, with sources
 lib/demo/frank.ts    the example owner
 lib/state/           snapshot state, saved to localStorage

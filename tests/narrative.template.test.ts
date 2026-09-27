@@ -16,7 +16,7 @@ describe("plan summary template", () => {
     const text = summary(option);
     expect(text.length).toBeGreaterThan(0);
     expect(text).not.toMatch(/undefined|NaN|null/);
-    expect(text).toContain("Mancini Precision Machining");
+    expect(text).toContain("Frank's Precision Machinery");
     // Only rounded money: no raw amounts like $3885901 or $4,849,200.
     expect(text).not.toMatch(/\$\d{4,}|\$\d{1,3},\d{3}/);
     expect(words(text)).toBeGreaterThanOrEqual(50);
@@ -58,7 +58,7 @@ describe("plan summary template", () => {
 
   it("family available: quotes an after-tax estimate", () => {
     const text = summary("family", { ...FRANK, familyInterest: "yes" });
-    expect(text).toMatch(/Passing Mancini Precision Machining to a family member could leave you with about \$\d/);
+    expect(text).toMatch(/Passing Frank's Precision Machinery to a family member could leave you with about \$\d/);
     expect(text).not.toMatch(/is tight/);
   });
 
@@ -86,7 +86,7 @@ describe("plan summary template", () => {
   it("falls back to 'your business' without a business name", () => {
     const text = summary("eot", { ...FRANK, businessName: undefined });
     expect(text).toContain("your business");
-    expect(text).not.toContain("Mancini");
+    expect(text).not.toContain("Precision Machinery");
     expect(summary("canadian", { ...FRANK, businessName: "   " })).toContain("Selling your business");
   });
 

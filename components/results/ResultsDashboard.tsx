@@ -52,7 +52,7 @@ function Section({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className="scroll-mt-20 space-y-8 py-12 first:pt-2 sm:py-16 sm:first:pt-2"
+      className="scroll-mt-20 space-y-8 py-10 first:pt-2 sm:py-12 sm:first:pt-2"
     >
       <div className="max-w-3xl space-y-3">
         <p className="text-sm font-semibold tracking-[0.12em] text-primary uppercase">{eyebrow}</p>
@@ -157,7 +157,7 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
                 <EotCheck result={results.eot} />
               </Section>
 
-              <div className="space-y-4 pt-12 sm:pt-16">
+              <div className="space-y-4 pt-10 sm:pt-12">
                 <AssumptionsExpander snapshot={snapshot} />
                 <Disclaimer />
               </div>

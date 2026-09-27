@@ -226,7 +226,7 @@ export function WhatIf({ snapshot, eotAnswers, results }: { snapshot: Snapshot; 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-wrap gap-3">
         {topFixes.length > 0 && (
           <Button size="xl" onClick={() => setAnswers(fixes)}>
