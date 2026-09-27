@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils";
 export const DISCLAIMER_TEXT =
   "Handover gives planning estimates only. It is not tax, legal, financial or valuation advice. Numbers use simplified assumptions (see Assumptions). Talk to a CPA, a business lawyer and a Chartered Business Valuator before making decisions.";
 
-/** Required on every screen that shows money, and in print (plan section 9). */
+/** Required on every screen that shows money (plan section 9); the printed reports use DISCLAIMER_TEXT. */
 export function Disclaimer({ className }: { className?: string }) {
   return (
     <div
       role="note"
       className={cn(
-        "print-break-avoid flex gap-3 rounded-r-2xl border-l-4 border-primary bg-secondary/70 px-5 py-4 text-sm leading-relaxed text-muted-foreground print:border print:border-l-4 print:bg-transparent",
+        "flex gap-3 rounded-r-2xl border-l-4 border-primary bg-secondary/70 px-5 py-4 text-sm leading-relaxed text-muted-foreground",
         className,
       )}
     >

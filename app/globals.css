@@ -183,7 +183,4 @@
   .no-print {
     display: none !important;
   }
-  .print-break-avoid {
-    break-inside: avoid;
-  }
 }

@@ -211,7 +211,7 @@ export function ResultsReport({
       </ReportSection>
 
       <ReportSection number={6} title="Assumptions and limitations" keepTogether>
-        <AssumptionsList />
+        <AssumptionsList snapshot={snapshot} />
       </ReportSection>
 
       <ReportNotice />

@@ -30,9 +30,9 @@ export const PLAN_TITLES: Record<OptionId, string> = {
 /** Section heading in the landing's style: green uppercase eyebrow over a serif h2. */
 function SectionHeading({ id, eyebrow, title }: { id: string; eyebrow: string; title: string }) {
   return (
-    <div className="space-y-2 print:space-y-0">
-      <p className="text-sm font-semibold tracking-[0.12em] text-primary uppercase print:hidden">{eyebrow}</p>
-      <h2 id={id} className="text-3xl font-semibold sm:text-4xl print:text-xl">
+    <div className="space-y-2">
+      <p className="text-sm font-semibold tracking-[0.12em] text-primary uppercase">{eyebrow}</p>
+      <h2 id={id} className="text-3xl font-semibold sm:text-4xl">
         {title}
       </h2>
     </div>
@@ -56,30 +56,30 @@ function KeyFacts({ option }: { option: ExitOption }) {
   return (
     <section
       aria-label="Key facts for this option"
-      className="bg-band text-hero-foreground print:border-y print:bg-transparent print:text-foreground"
+      className="bg-band text-hero-foreground"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 print:px-0">
-        <ul className="grid divide-y divide-white/15 sm:grid-cols-3 sm:divide-x sm:divide-y-0 print:grid-cols-3 print:divide-y-0">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <ul className="grid divide-y divide-white/15 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {facts.map((f) => (
             <li
               key={f.label}
-              className="flex flex-col justify-end gap-1.5 py-7 sm:px-8 sm:py-10 sm:first:pl-0 sm:last:pr-0 print:px-3 print:py-2 print:first:pl-0"
+              className="flex flex-col justify-end gap-1.5 py-7 sm:px-8 sm:py-10 sm:first:pl-0 sm:last:pr-0"
             >
               <p
                 className={cn(
-                  "font-heading leading-tight font-semibold text-balance text-highlight print:text-primary",
-                  f.big ? "text-5xl sm:text-6xl print:text-3xl" : "text-2xl sm:text-3xl print:text-lg",
+                  "font-heading leading-tight font-semibold text-balance text-highlight",
+                  f.big ? "text-5xl sm:text-6xl" : "text-2xl sm:text-3xl",
                 )}
               >
                 {f.value}
               </p>
-              <p className="text-base text-hero-muted print:text-sm print:text-muted-foreground">{f.label}</p>
+              <p className="text-base text-hero-muted">{f.label}</p>
             </li>
           ))}
         </ul>
         {option.statusNote && (
-          <p className="border-t border-white/15 py-4 text-base text-hero-muted print:border-0 print:py-1 print:text-foreground">
-            <strong className="font-semibold text-hero-foreground print:text-foreground">Note: </strong>
+          <p className="border-t border-white/15 py-4 text-base text-hero-muted">
+            <strong className="font-semibold text-hero-foreground">Note: </strong>
             {option.statusNote}
           </p>
         )}
@@ -114,7 +114,7 @@ function PlanBody({ option, snapshot }: { option: OptionId; snapshot: Snapshot }
       <div className="print:hidden">
         <PageHero
           eyebrow="Transition plan"
-          title={<span className="print:block print:text-3xl">Your plan: {PLAN_TITLES[option]}</span>}
+          title={`Your plan: ${PLAN_TITLES[option]}`}
           actions={
             <>
               <Button asChild variant="ghost" size="xl" className={heroButtonClass.outline}>
@@ -126,34 +126,32 @@ function PlanBody({ option, snapshot }: { option: OptionId; snapshot: Snapshot }
             </>
           }
         >
-          {/* Title and summary are smaller in print so the plan stays on 2 pages (block so the
-              smaller line height applies instead of the hero's). */}
-          <span className="print:block print:text-base print:leading-snug">{summary}</span>
+          {summary}
         </PageHero>
 
         {chosen && <KeyFacts option={chosen} />}
 
-        <div className="mx-auto max-w-6xl space-y-16 px-4 py-14 sm:px-6 print:space-y-5 print:px-0 print:py-4">
+        <div className="mx-auto max-w-6xl space-y-16 px-4 py-14 sm:px-6">
           <Disclaimer />
 
-          <section aria-labelledby="timeline-title" className="space-y-8 print:space-y-3">
+          <section aria-labelledby="timeline-title" className="space-y-8">
             <SectionHeading id="timeline-title" eyebrow="Your timeline" title="Step by step" />
-            <div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8 print:rounded-none print:border-0 print:p-0 print:shadow-none">
+            <div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
               <Timeline steps={steps} />
             </div>
           </section>
 
-          <section aria-labelledby="checklist-title" className="space-y-8 print:space-y-3">
+          <section aria-labelledby="checklist-title" className="space-y-8">
             <SectionHeading id="checklist-title" eyebrow="Track your progress" title="Your checklist" />
             <Checklist steps={steps} done={done} onToggle={toggle} />
           </section>
 
-          <section aria-labelledby="advisors-title" className="space-y-8 print:space-y-3">
+          <section aria-labelledby="advisors-title" className="space-y-8">
             <SectionHeading id="advisors-title" eyebrow="Your team" title="Who to talk to" />
             <AdvisorCards option={option} />
           </section>
 
-          <AssumptionsExpander />
+          <AssumptionsExpander snapshot={snapshot} />
         </div>
       </div>
     </>

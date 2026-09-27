@@ -32,10 +32,10 @@ function PlanButton({ option, isBest }: { option: ExitOption; isBest: boolean })
       asChild
       size="lg"
       variant={isBest ? "default" : "outline"}
-      className="no-print h-auto min-h-12 w-full py-2 text-base whitespace-normal"
+      className="h-auto min-h-12 w-full py-2 text-base whitespace-normal"
     >
       <Link href={`/plan?option=${option.id}`}>
-        Build my plan <ArrowRight />
+        Build my plan<span className="sr-only">: {option.name}</span> <ArrowRight aria-hidden />
       </Link>
     </Button>
   );
@@ -45,7 +45,7 @@ function BestMatchBadge({ compact = false }: { compact?: boolean }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full bg-highlight py-1 font-sans font-semibold text-hero print:border print:border-primary print:bg-transparent print:text-primary",
+        "inline-flex items-center rounded-full bg-highlight py-1 font-sans font-semibold text-hero",
         // Compact: for the narrow table column — smaller type, and it borrows the cell's side padding.
         compact ? "-mx-2 justify-center gap-1 px-2 text-center text-xs leading-tight" : "gap-1.5 px-3 text-sm whitespace-nowrap",
       )}
@@ -72,12 +72,14 @@ function WarningNote({ children }: { children: React.ReactNode }) {
 export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; bestMatch: OptionId }) {
   return (
     <>
-      <div className="hidden overflow-hidden rounded-2xl border bg-card shadow-sm lg:block print:block print:rounded-none print:shadow-none">
-        <table className="w-full table-fixed border-collapse text-base print:text-sm">
+      <div className="hidden overflow-hidden rounded-2xl border bg-card shadow-sm lg:block">
+        <table className="w-full table-fixed border-collapse text-base">
           <caption className="sr-only">Exit options compared side by side</caption>
           <thead>
             <tr>
-              <th scope="col" className="w-44 p-4 print:w-32" />
+              <th scope="col" className="w-44 p-4">
+                <span className="sr-only">Exit option</span>
+              </th>
               {options.map((o) => {
                 const isBest = o.id === bestMatch;
                 return (
@@ -86,7 +88,7 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
                     scope="col"
                     className={cn(
                       "p-4 text-left align-top font-heading text-lg leading-snug font-semibold",
-                      isBest && "bg-hero text-hero-foreground print:bg-transparent print:text-foreground",
+                      isBest && "bg-hero text-hero-foreground",
                       o.status === "unavailable" && "bg-muted/60 text-muted-foreground",
                     )}
                   >
@@ -120,9 +122,9 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
                       key={o.id}
                       className={cn(
                         "p-4 align-top",
-                        row.emphasis && "font-heading text-2xl font-semibold print:text-lg",
+                        row.emphasis && "font-heading text-2xl font-semibold",
                         row.emphasis && isBest && "text-primary",
-                        isBest && "bg-secondary print:bg-transparent",
+                        isBest && "bg-secondary",
                         o.status === "warning" && "bg-destructive/[0.03]",
                         o.status === "unavailable" && "bg-muted/60 text-muted-foreground",
                       )}
@@ -133,8 +135,10 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
                 })}
               </tr>
             ))}
-            <tr className="no-print border-t">
-              <td />
+            <tr className="border-t">
+              <th scope="row" className="p-4">
+                <span className="sr-only">Next step</span>
+              </th>
               {options.map((o) => (
                 <td
                   key={o.id}
@@ -152,7 +156,7 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
         </table>
       </div>
 
-      <div className="grid gap-5 lg:hidden print:hidden">
+      <div className="grid gap-5 lg:hidden">
         {options.map((o) => {
           const isBest = o.id === bestMatch;
           return (
@@ -160,7 +164,7 @@ export function OptionsTable({ options, bestMatch }: { options: ExitOption[]; be
               key={o.id}
               aria-label={o.name}
               className={cn(
-                "print-break-avoid overflow-hidden rounded-2xl border bg-card shadow-sm",
+                "overflow-hidden rounded-2xl border bg-card shadow-sm",
                 isBest && "border-primary ring-2 ring-primary",
                 o.status === "warning" && "border-destructive/40",
                 o.status === "unavailable" && "bg-muted/50 shadow-none",

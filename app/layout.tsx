@@ -37,8 +37,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <SnapshotProvider>
           <TooltipProvider>
+            <a
+              href="#main"
+              className="sr-only z-50 rounded-md bg-white px-4 py-2 font-semibold text-hero focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:ring-3 focus:ring-primary/50 focus:outline-none"
+            >
+              Skip to main content
+            </a>
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
+              {children}
+            </main>
             <SiteFooter />
           </TooltipProvider>
         </SnapshotProvider>

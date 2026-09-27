@@ -111,13 +111,13 @@ export function FacetField({ children, className }: { children: React.ReactNode;
   return (
     <div
       ref={ref}
-      // Base colour = SHADES[0]; a class (not inline style) so print can drop it.
-      className={cn("relative isolate bg-[oklch(0.31_0.057_165)] print:bg-transparent", className)}
+      // Base colour = SHADES[0].
+      className={cn("relative isolate bg-[oklch(0.31_0.057_165)]", className)}
     >
       {size && shapes && (
         <svg
           aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 size-full print:hidden"
+          className="pointer-events-none absolute inset-0 -z-10 size-full"
           viewBox={`0 0 ${size.w} ${size.h}`}
           preserveAspectRatio="none"
         >
@@ -145,7 +145,6 @@ export function Sheet({ children, className }: { children: React.ReactNode; clas
     <div
       className={cn(
         "rounded-[1.5rem] bg-background p-3 text-foreground shadow-[0_28px_70px_-28px_rgb(0_0_0/0.55),0_2px_6px_-2px_rgb(0_0_0/0.2)] ring-1 ring-white/10 sm:rounded-[2.25rem] sm:p-8 lg:p-10",
-        "print:rounded-none print:bg-transparent print:p-0 print:shadow-none print:ring-0",
         className,
       )}
     >

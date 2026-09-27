@@ -42,16 +42,16 @@ export function KeyFigures({ results }: { results: Results }) {
   return (
     <section
       aria-label="Key figures"
-      className="bg-band text-hero-foreground print:border-y print:bg-transparent print:text-foreground"
+      className="bg-band text-hero-foreground"
     >
-      <dl className="mx-auto grid max-w-6xl divide-y divide-white/15 px-4 sm:px-6 md:grid-cols-3 md:divide-x md:divide-y-0 print:grid-cols-3 print:divide-x print:divide-y-0 print:divide-border print:px-0">
+      <dl className="mx-auto grid max-w-6xl divide-y divide-white/15 px-4 sm:px-6 md:grid-cols-3 md:divide-x md:divide-y-0">
         {figures.map((f) => (
-          <div key={f.label} className="flex flex-col gap-2 py-7 md:px-8 md:py-10 md:first:pl-0 md:last:pr-0 print:px-3 print:py-3">
-            <dt className="text-base font-semibold text-hero-muted print:text-muted-foreground">{f.label}</dt>
-            <dd className="font-heading text-4xl leading-tight font-semibold text-highlight lg:text-5xl print:text-2xl print:text-primary">
+          <div key={f.label} className="flex flex-col gap-2 py-7 md:px-8 md:py-10 md:first:pl-0 md:last:pr-0">
+            <dt className="text-base font-semibold text-hero-muted">{f.label}</dt>
+            <dd className="font-heading text-4xl leading-tight font-semibold text-highlight lg:text-5xl">
               {f.value}
             </dd>
-            <dd className="text-base leading-snug text-hero-muted print:text-sm print:text-muted-foreground">{f.detail}</dd>
+            <dd className="text-base leading-snug text-hero-muted">{f.detail}</dd>
           </div>
         ))}
       </dl>

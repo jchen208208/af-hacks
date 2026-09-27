@@ -36,7 +36,7 @@ export function AfterTaxChart({ options, bestMatch }: { options: ExitOption[]; b
     .sort((a, b) => b.afterTax - a.afterTax);
 
   return (
-    <figure className="print-break-avoid space-y-5 rounded-2xl border bg-card p-4 shadow-sm sm:p-8 print:rounded-none print:border-0 print:p-0 print:shadow-none">
+    <figure className="space-y-5 rounded-2xl border bg-card p-4 shadow-sm sm:p-8">
       <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
         <span className="font-heading text-2xl font-semibold">After-tax money to you, by option</span>
         <span className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -48,7 +48,15 @@ export function AfterTaxChart({ options, bestMatch }: { options: ExitOption[]; b
           </span>
         </span>
       </figcaption>
-      <div style={{ height: data.length * 60 + 16 }} className="font-sans">
+      <ul className="sr-only">
+        {data.map((d) => (
+          <li key={d.optionId}>
+            {SHORT_NAMES[d.optionId]}: {formatMoney(d.afterTax)}
+            {d.optionId === bestMatch && " (best match)"}
+          </li>
+        ))}
+      </ul>
+      <div aria-hidden style={{ height: data.length * 60 + 16 }} className="font-sans">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ top: 0, right: 64, bottom: 0, left: 0 }}>
             <XAxis type="number" hide />

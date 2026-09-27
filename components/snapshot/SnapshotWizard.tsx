@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,14 @@ export function SnapshotWizard() {
   useEffect(() => {
     if (hydrated) exitDemo();
   }, [hydrated, exitDemo]);
+
+  // On a step change, move focus to the new step's heading so keyboard and screen-reader users start at the top.
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const prevStep = useRef(step);
+  useEffect(() => {
+    if (prevStep.current !== step) headingRef.current?.focus({ preventScroll: true });
+    prevStep.current = step;
+  }, [step]);
 
   if (!hydrated) {
     return <div className="h-[32rem] animate-pulse rounded-2xl border bg-card shadow-sm" aria-busy />;
@@ -62,7 +70,9 @@ export function SnapshotWizard() {
             <p className="text-sm font-bold tracking-[0.12em] text-primary uppercase">
               Step {step + 1} of {STEPS.length}
             </p>
-            <h2 className="text-4xl leading-tight font-semibold sm:text-[2.75rem]">{STEP_TITLES[step]}</h2>
+            <h2 ref={headingRef} tabIndex={-1} className="text-4xl leading-tight font-semibold focus:outline-none sm:text-[2.75rem]">
+              {STEP_TITLES[step]}
+            </h2>
             <p className="text-lg text-muted-foreground">{STEP_INTROS[step]}</p>
           </div>
           <button

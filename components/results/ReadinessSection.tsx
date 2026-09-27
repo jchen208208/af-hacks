@@ -26,20 +26,20 @@ export function ReadinessDial({ score, bandLabel }: { score: number; bandLabel: 
           out of 100
         </text>
       </svg>
-      <figcaption className="mt-2 rounded-full bg-hero px-4 py-1 text-base font-semibold text-hero-foreground print:border print:border-primary print:bg-transparent print:text-primary">
+      <figcaption className="mt-2 rounded-full bg-hero px-4 py-1 text-base font-semibold text-hero-foreground">
         {bandLabel}
       </figcaption>
     </figure>
   );
 }
 
-const CARD = "rounded-2xl border bg-card p-6 shadow-sm sm:p-8 print:rounded-none print:border-0 print:p-0 print:shadow-none";
+const CARD = "rounded-2xl border bg-card p-6 shadow-sm sm:p-8";
 
 export function ReadinessSection({ readiness }: { readiness: ReadinessResult }) {
   return (
-    <div className="space-y-12 print:space-y-4">
+    <div className="space-y-12">
       <div className="grid gap-6 md:grid-cols-[auto_1fr]">
-        <div className={`${CARD} flex flex-col items-center justify-center gap-4 print-break-avoid`}>
+        <div className={`${CARD} flex flex-col items-center justify-center gap-4`}>
           <ReadinessDial score={readiness.score} bandLabel={readiness.bandLabel} />
           <p className="flex max-w-64 items-start gap-2 text-center text-sm leading-snug text-muted-foreground">
             <Clock className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
@@ -47,7 +47,7 @@ export function ReadinessSection({ readiness }: { readiness: ReadinessResult }) 
           </p>
         </div>
 
-        <div className={`${CARD} print-break-avoid`}>
+        <div className={CARD}>
           <h3 className="mb-5 font-heading text-xl font-semibold">How buyers will see it</h3>
           <ul className="space-y-5">
             {readiness.factors.map((f) => (
@@ -60,7 +60,7 @@ export function ReadinessSection({ readiness }: { readiness: ReadinessResult }) 
                 </div>
                 <Progress
                   value={(f.points / f.max) * 100}
-                  className="h-2.5 bg-secondary [print-color-adjust:exact]"
+                  className="h-2.5 bg-secondary"
                   aria-label={`${f.label}: ${f.points} of ${f.max}`}
                 />
               </li>
@@ -69,19 +69,19 @@ export function ReadinessSection({ readiness }: { readiness: ReadinessResult }) 
         </div>
       </div>
 
-      <div className="space-y-5 print:space-y-2">
+      <div className="space-y-5">
         <h3 className="font-heading text-2xl font-semibold">Your top 3 fixes</h3>
-        <ol className="grid gap-5 md:grid-cols-3 print:grid-cols-3 print:gap-3">
+        <ol className="grid gap-5 md:grid-cols-3">
           {readiness.topFixes.map((fix, i) => (
             <li
               key={fix.factor}
-              className="print-break-avoid space-y-3 rounded-2xl border bg-card p-6 shadow-sm print:rounded-none print:border-0 print:border-l-2 print:border-primary print:p-0 print:pl-3 print:shadow-none"
+              className="space-y-3 rounded-2xl border bg-card p-6 shadow-sm"
             >
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-base font-semibold text-secondary-foreground">
                   <TrendingUp className="size-4" aria-hidden /> +{fix.gain} points
                 </span>
-                <span className="font-heading text-4xl font-semibold text-primary/25 print:hidden" aria-hidden>
+                <span className="font-heading text-4xl font-semibold text-primary/25" aria-hidden>
                   {i + 1}
                 </span>
               </div>

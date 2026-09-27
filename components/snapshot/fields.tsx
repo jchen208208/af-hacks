@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useState } from "react";
 import { ArrowDown, ArrowUp, CircleAlert, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,11 +38,19 @@ export function RequiredMark() {
   );
 }
 
+/** ids of the hint and error text, so the input (or fieldset) announces them. */
+function describedBy(id: string, { hint, error }: { hint?: string; error?: string }) {
+  return [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(" ") || undefined;
+}
+
 function FieldShell({ id, label, hint, help, error, required, children, as = "div" }: FieldShellProps) {
   const Wrapper = as;
   const LabelEl = as === "fieldset" ? "legend" : Label;
   return (
-    <Wrapper className="group/field min-w-0 space-y-2.5" aria-describedby={error ? `${id}-error` : undefined}>
+    <Wrapper
+      className="group/field min-w-0 space-y-2.5"
+      aria-describedby={as === "fieldset" ? describedBy(id, { hint, error }) : undefined}
+    >
       <div className="flex items-center gap-2">
         <LabelEl htmlFor={as === "fieldset" ? undefined : id} className="block text-lg leading-snug font-semibold">
           {label}
@@ -63,7 +71,11 @@ function FieldShell({ id, label, hint, help, error, required, children, as = "di
           </Tooltip>
         )}
       </div>
-      {hint && <p className="text-base text-muted-foreground">{hint}</p>}
+      {hint && (
+        <p id={`${id}-hint`} className="text-base text-muted-foreground">
+          {hint}
+        </p>
+      )}
       {children}
       {/* Answers are checked live, so hide the message while the owner is still typing in this field. */}
       {error && (
@@ -92,6 +104,8 @@ export function TextField(props: {
     <FieldShell id={id} {...props}>
       <Input
         id={id}
+        aria-invalid={!!props.error}
+        aria-describedby={describedBy(id, props)}
         className={cn(CONTROL, "max-w-lg")}
         value={props.value ?? ""}
         placeholder={props.placeholder}
@@ -127,6 +141,7 @@ export function NumberField(props: {
           inputMode="numeric"
           aria-required={props.required}
           aria-invalid={!!props.error}
+          aria-describedby={describedBy(id, props)}
           className={cn(CONTROL, "tabular-nums", props.prefix && "pl-9")}
           value={props.value ?? ""}
           placeholder={props.placeholder}
@@ -150,7 +165,13 @@ export function SelectField<T extends string>(props: {
   return (
     <FieldShell id={id} {...props}>
       <Select value={props.value} onValueChange={(v) => props.onChange(v as T)}>
-        <SelectTrigger id={id} aria-required={props.required} aria-invalid={!!props.error} className={cn(CONTROL, "w-full max-w-lg data-[size=default]:h-14")}>
+        <SelectTrigger
+          id={id}
+          aria-required={props.required}
+          aria-invalid={!!props.error}
+          aria-describedby={describedBy(id, props)}
+          className={cn(CONTROL, "w-full max-w-lg data-[size=default]:h-14")}
+        >
           <SelectValue placeholder={props.placeholder ?? "Choose one"} />
         </SelectTrigger>
         <SelectContent>
@@ -221,10 +242,20 @@ export function RankField<T extends string>(props: {
   onChange: (v: T[]) => void;
 }) {
   const id = useId();
+  const [announcement, setAnnouncement] = useState("");
+  const buttonId = (item: T, dir: "up" | "down") => `${id}-${item}-${dir}`;
   const move = (from: number, to: number) => {
+    const item = props.value[from];
     const next = [...props.value];
     [next[from], next[to]] = [next[to], next[from]];
     props.onChange(next);
+    setAnnouncement(`${props.labels[item]} moved to number ${to + 1} of ${next.length}.`);
+    // Keep focus on the moved item; if that direction is now disabled (top or bottom), use the other button.
+    const dir = to < from ? "up" : "down";
+    requestAnimationFrame(() => {
+      const same = document.getElementById(buttonId(item, dir)) as HTMLButtonElement | null;
+      (same && !same.disabled ? same : document.getElementById(buttonId(item, dir === "up" ? "down" : "up")))?.focus();
+    });
   };
   return (
     <FieldShell id={id} as="fieldset" {...props}>
@@ -251,6 +282,7 @@ export function RankField<T extends string>(props: {
               variant="ghost"
               size="icon-lg"
               className="size-11 rounded-lg"
+              id={buttonId(item, "up")}
               disabled={i === 0}
               onClick={() => move(i, i - 1)}
               aria-label={`Move "${props.labels[item]}" up`}
@@ -262,6 +294,7 @@ export function RankField<T extends string>(props: {
               variant="ghost"
               size="icon-lg"
               className="size-11 rounded-lg"
+              id={buttonId(item, "down")}
               disabled={i === props.value.length - 1}
               onClick={() => move(i, i + 1)}
               aria-label={`Move "${props.labels[item]}" down`}
@@ -271,6 +304,9 @@ export function RankField<T extends string>(props: {
           </li>
         ))}
       </ol>
+      <p aria-live="polite" className="sr-only">
+        {announcement}
+      </p>
     </FieldShell>
   );
 }

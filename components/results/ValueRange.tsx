@@ -6,7 +6,7 @@ import { formatMoney, formatRange } from "@/lib/format";
 export function ValueRange({ valuation, sde }: { valuation: ValuationResult; sde?: number }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-      <div className="print-break-avoid space-y-6 rounded-2xl border bg-card p-6 shadow-sm sm:p-8 print:rounded-none print:border-0 print:p-0 print:shadow-none">
+      <div className="space-y-6 rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
         <div className="space-y-2">
           <p className="text-lg text-muted-foreground">Your business is likely worth</p>
           <p className="font-heading text-4xl leading-tight font-semibold text-primary sm:text-5xl">
@@ -15,7 +15,7 @@ export function ValueRange({ valuation, sde }: { valuation: ValuationResult; sde
         </div>
 
         {/* Low – midpoint – high, drawn as a simple range bar. */}
-        <div aria-hidden className="space-y-2 print:hidden">
+        <div aria-hidden className="space-y-2">
           <div className="relative h-3 rounded-full bg-secondary">
             <div className="absolute inset-y-0 left-[8%] right-[8%] rounded-full bg-primary/70" />
             <div className="absolute top-1/2 left-1/2 size-5 -translate-1/2 rounded-full border-4 border-card bg-hero shadow" />
@@ -26,10 +26,9 @@ export function ValueRange({ valuation, sde }: { valuation: ValuationResult; sde
             <span>{formatMoney(valuation.high)}</span>
           </div>
         </div>
-        <p className="hidden text-base print:block">Midpoint estimate: {formatMoney(valuation.midpoint)}</p>
       </div>
 
-      <div className="print-break-avoid space-y-4 rounded-2xl bg-secondary/70 p-6 sm:p-8 print:rounded-none print:bg-transparent print:p-0">
+      <div className="space-y-4 rounded-2xl bg-secondary/70 p-6 sm:p-8">
         <h3 className="font-heading text-xl font-semibold">How we worked it out</h3>
         <ol className="space-y-3 text-base leading-relaxed">
           <li>

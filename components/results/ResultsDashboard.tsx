@@ -43,12 +43,11 @@ function Section({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className="scroll-mt-20 space-y-8 py-12 first:pt-2 sm:py-16 sm:first:pt-2 print:space-y-3 print:py-6"
+      className="scroll-mt-20 space-y-8 py-12 first:pt-2 sm:py-16 sm:first:pt-2"
     >
-      {/* In print, never leave a section heading stranded at the bottom of a page. */}
-      <div className="max-w-3xl space-y-3 print:break-after-avoid print:space-y-1">
+      <div className="max-w-3xl space-y-3">
         <p className="text-sm font-semibold tracking-[0.12em] text-primary uppercase">{eyebrow}</p>
-        <h2 id={`${id}-title`} className="text-3xl font-semibold sm:text-4xl print:text-2xl">
+        <h2 id={`${id}-title`} className="text-3xl font-semibold sm:text-4xl">
           {title}
         </h2>
         {intro && <p className="text-lg leading-relaxed text-muted-foreground">{intro}</p>}
@@ -82,11 +81,11 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
 
         {/* Faceted green field; beige sheets float on it for the dense reading. Negative bottom margin lets the
             green run into the footer's top margin so there's no beige strip before the dark footer. */}
-        <FacetField className="-mb-16 print:mb-0">
-          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-band to-transparent print:hidden" />
-          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-band to-transparent print:hidden" />
+        <FacetField className="-mb-16">
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-band to-transparent" />
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-band to-transparent" />
 
-          <div className="mx-auto max-w-6xl px-4 pt-12 pb-24 sm:px-6 sm:pt-16 print:px-0 print:py-0">
+          <div className="mx-auto max-w-6xl px-4 pt-12 pb-24 sm:px-6 sm:pt-16">
             {/* One continuous sheet so the four sections read as a single connected page, split only by dividers. */}
             <Sheet className="divide-y p-5 sm:p-10 lg:p-14">
               <Section
@@ -126,7 +125,7 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
               </Section>
 
               <div className="space-y-4 pt-12 sm:pt-16">
-                <AssumptionsExpander />
+                <AssumptionsExpander snapshot={snapshot} />
                 <Disclaimer />
               </div>
             </Sheet>
