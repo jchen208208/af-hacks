@@ -113,23 +113,28 @@ function BarsMock() {
 /** Floating app-screen mockups for the hero's foreground. Decorative; described by a hidden caption. */
 export function ProductPreview() {
   return (
-    // On large screens the figure widens leftwards into the grid gap (w-auto + negative left margin),
-    // so the mockups sit further left and slightly larger than the grid column.
-    <figure className="relative mx-auto w-full max-w-xl lg:mr-0 lg:-ml-4 lg:w-auto lg:max-w-none xl:-ml-20">
+    // On extra-large screens the figure widens a little leftwards into the grid gap (w-auto + negative
+    // left margin), so the mockups are slightly larger than the grid column.
+    <figure className="relative mx-auto w-full max-w-xl lg:mr-0 lg:w-auto lg:max-w-none xl:-ml-6">
       <figcaption className="sr-only">
         Example results for a sample business: selling to employees leaves about $4.85 million after tax,
         compared with about $3.89 million from an outside buyer.
       </figcaption>
       {/* Top padding leaves room for the after-tax card so all its bars show above the main window. */}
       <div aria-hidden className="relative pt-6 pb-10 sm:translate-x-5 sm:pt-40 sm:pb-40 lg:pt-44 lg:pb-44">
-        <div className="absolute top-8 right-2 z-0 hidden rotate-[3deg] sm:block lg:top-2 lg:right-0">
+        {/* Tilted and tucked behind the main window; nudged right only where the viewport has room. */}
+        <div className="absolute top-12 right-2 z-0 hidden rotate-[6deg] sm:block lg:top-6 lg:max-[1399px]:right-0 min-[1400px]:-right-8">
           <BarsMock />
         </div>
-        {/* Overhangs the container on the right only as far as the free space beside it allows. */}
-        <div className="relative z-10 sm:translate-x-4 sm:scale-[1.04]lg:-mr-2 xl:-mr-[clamp(0.5rem,calc(50vw-36rem),2.5rem)]">
+        {/* Overhangs the container on the right only as far as the free space beside it allows (shifted further
+            right on wide screens, by the free space beside it up to 3rem; the sm and xl ranges must not overlap). Scaled up
+            from its right edge, so it grows toward the headline instead of off the side of the screen. */}
+        <div className="relative z-10 origin-right sm:max-xl:translate-x-4 sm:scale-[1.06] lg:scale-[1.1] xl:-mr-[clamp(0.5rem,calc(50vw-36rem),2.5rem)] xl:translate-x-[clamp(1rem,calc(50vw-39rem),3rem)]">
           <ComparisonMock />
         </div>
-        <div className="absolute bottom-0 -left-1 z-20 hidden -rotate-[5deg] sm:block lg:-left-2">
+        {/* Raised so just under half of it overlaps the main window's lower-left corner, keeping the best-match
+            after-tax figure clear. */}
+        <div className="absolute bottom-10 -left-4 z-20 hidden -rotate-[8deg] sm:block lg:bottom-11 lg:-left-6">
           <ReadinessMock />
         </div>
       </div>
