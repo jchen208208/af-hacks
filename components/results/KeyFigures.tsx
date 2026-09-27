@@ -34,7 +34,7 @@ export function KeyFigures({ results }: { results: Results }) {
       value: formatMoney(best.afterTax),
       detail:
         gain > 0
-          ? `After tax — about ${formatMoney(gain)} more than selling to an outside buyer`
+          ? `After tax, about ${formatMoney(gain)} more than selling to an outside buyer`
           : "Estimated after tax to you",
     });
   }

@@ -10,6 +10,8 @@ export interface NavSection {
 
 /** Scroll distance a user must move away from a clicked section before scroll-tracking takes over again. */
 const CLICK_LOCK_PX = 40;
+/** Frames without movement that count as the click's scroll having finished. */
+const SETTLE_FRAMES = 5;
 
 /** Sticky pill nav on its own dark-green surface (legible over the green field and beige sheets). */
 export function SectionNav({ sections }: { sections: NavSection[] }) {
@@ -52,16 +54,24 @@ export function SectionNav({ sections }: { sections: NavSection[] }) {
 
   const onClick = (id: string) => {
     setActive(id);
-    clickLock.current = { id, y: null };
-    // The anchor jump happens after this handler; record where it lands.
-    requestAnimationFrame(() => {
-      if (clickLock.current?.id === id) clickLock.current.y = window.scrollY;
-    });
+    const lock: { id: string; y: number | null } = { id, y: null };
+    clickLock.current = lock;
+    // The jump may be an animated glide (smooth scroll); record where it lands once the page stops moving.
+    let last = Number.NaN;
+    let stillFrames = 0;
+    const settle = () => {
+      if (clickLock.current !== lock) return;
+      if (window.scrollY === last) stillFrames++;
+      else [last, stillFrames] = [window.scrollY, 0];
+      if (stillFrames >= SETTLE_FRAMES) lock.y = window.scrollY;
+      else requestAnimationFrame(settle);
+    };
+    requestAnimationFrame(settle);
   };
 
   return (
     <nav aria-label="Sections" className="no-print sticky top-0 z-30 border-y border-white/10 bg-band shadow-[0_8px_24px_-12px_rgb(0_0_0/0.5)]">
-      <ul className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 py-3 sm:px-6">
+      <ul data-lenis-prevent-horizontal className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 py-3 sm:px-6">
         {sections.map((s) => {
           const isActive = s.id === active;
           return (

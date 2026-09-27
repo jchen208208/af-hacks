@@ -10,12 +10,12 @@ import { heroPhotoSrc } from "@/components/landing/heroPhoto";
 const STATS = [
   { value: "76%", label: "of Canadian small-business owners plan to exit within 10 years", source: "CFIB, 2023" },
   { value: "9%", label: "have a formal succession plan", source: "CFIB, 2023" },
-  { value: "$10M", label: "of capital gains tax-free when you sell to your employees", source: "EOT exemption, permanent since April 2026" },
+  { value: "$10M", label: "of capital gains can be tax-free when you sell to your employees", source: "EOT exemption, permanent since April 2026" },
 ];
 
 const STEPS = [
-  { icon: ClipboardList, title: "Describe your business", body: "About 20 plain-language questions. Ten minutes, no documents needed." },
-  { icon: Scale, title: "See where you stand", body: "A readiness score, a value range, and every realistic way to exit, side by side." },
+  { icon: ClipboardList, title: "Describe your business", body: "About 20 plain-language questions. Rough numbers are fine, and you won't need any documents." },
+  { icon: Scale, title: "See where you stand", body: "What the business could be worth, how ready it is to sell, and how each way out compares." },
   { icon: Map, title: "Leave with a plan", body: "A year-by-year checklist and who to call. Print it and bring it to your accountant." },
 ];
 
@@ -27,11 +27,12 @@ export default function LandingPage() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-12 sm:px-6 lg:min-h-[36rem] lg:grid-cols-[1fr_1.05fr] lg:gap-8 lg:pt-8 lg:pb-10">
           <div className="space-y-7">
             <h1 className="font-heading text-4xl leading-[1.1] font-semibold text-balance sm:text-5xl xl:text-6xl">
-              Your business took decades to build. Plan how it lives on.
+              Thinking about retiring? See what you&apos;d actually walk away with.
             </h1>
             <p className="max-w-xl text-xl leading-relaxed text-hero-muted lg:max-w-[28rem]">
-              In 10 minutes: what your business is worth, how ready it is to sell, and every way to exit —
-              including selling to your own employees tax-free.
+              In about 10 minutes you&apos;ll know what your business could sell for and how ready it is. You&apos;ll
+              also see what you&apos;d keep after tax from each kind of sale, including selling to your own employees,
+              where up to $10 million of the gain can be tax-free.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button
@@ -48,7 +49,7 @@ export default function LandingPage() {
                 className={heroButtonClass.outline}
               />
             </div>
-            <p className="text-base text-hero-muted">Free. No account. Your answers stay in your browser.</p>
+            <p className="text-base text-hero-muted">Free to use. Your answers stay in your browser.</p>
           </div>
 
           <ProductPreview />
@@ -70,7 +71,7 @@ export default function LandingPage() {
       <section className="mx-auto max-w-6xl px-4 pt-20 pb-8 sm:px-6">
         <div className="max-w-2xl space-y-3">
           <p className="text-sm font-semibold tracking-wide text-primary uppercase">How it works</p>
-          <h2 className="text-3xl font-semibold sm:text-4xl">Three steps to a plan you can take to your accountant</h2>
+          <h2 className="text-3xl font-semibold sm:text-4xl">You answer the questions. We do the math.</h2>
         </div>
         <ol className="mt-10 grid gap-6 md:grid-cols-3">
           {STEPS.map((step, i) => (

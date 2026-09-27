@@ -156,7 +156,7 @@ function eotSummary(name: string, snapshot: Snapshot, results: Results, eot: Exi
       : "if you qualify for the employee ownership trust exemption (a few of your answers need checking)";
   return [
     more
-      ? `Selling ${name} to your employees could leave you with about ${afterTax} after tax — about ${formatMoney(more)} more than selling to an outside buyer, ${why}.`
+      ? `Selling ${name} to your employees could leave you with about ${afterTax} after tax. That's about ${formatMoney(more)} more than selling to an outside buyer, ${why}.`
       : `Selling ${name} to your employees could leave you with about ${afterTax} after tax.`,
     owners,
   ];

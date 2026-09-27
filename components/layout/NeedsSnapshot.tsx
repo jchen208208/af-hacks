@@ -22,7 +22,7 @@ const COPY = {
 const WHAT_YOU_GET = [
   { icon: Gauge, title: "A readiness score", body: "How ready your business is to sell, and the three changes that would help most." },
   { icon: Tag, title: "What it could be worth", body: "An estimated value range based on your profit and your industry." },
-  { icon: Scale, title: "Every way to exit, side by side", body: "What you'd keep after tax, and what happens to your employees, for each option." },
+  { icon: Scale, title: "Your exit options, side by side", body: "What you'd keep after tax, and what happens to your employees, for each option." },
   { icon: Map, title: "A step-by-step plan", body: "A timeline and checklist for the option you choose, and who to talk to." },
 ];
 

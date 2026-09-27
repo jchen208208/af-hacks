@@ -44,8 +44,8 @@ export function ValueRange({ valuation, sde }: { valuation: ValuationResult; sde
         <p className="flex gap-2 border-t border-primary/15 pt-4 text-base leading-relaxed text-muted-foreground">
           <BadgeCheck className="mt-1 size-5 shrink-0 text-primary" aria-hidden />
           <span>
-            A Chartered Business Valuator (CBV) — a professional who values companies — can give you the real
-            number.
+            For a firm number, talk to a Chartered Business Valuator (CBV), a professional who values
+            companies.
           </span>
         </p>
       </div>

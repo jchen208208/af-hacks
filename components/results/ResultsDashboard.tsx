@@ -81,7 +81,7 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
           title={`Exit options for ${name}`}
           actions={<PrintButton className={heroButtonClass.outline} />}
         >
-          Every realistic way to step away, side by side, with what you&apos;d keep after tax.
+          Your options for stepping away, compared side by side, with what you&apos;d keep after tax from each.
         </PageHero>
 
         <KeyFigures results={results} />
@@ -101,12 +101,12 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
                 id="options"
                 eyebrow="Compare"
                 title="Your exit options"
-                intro="Price, tax and what you keep — plus what happens to your people and how long it takes."
+                intro="For each option: the price, the tax, what you keep, what happens to your staff and how long it takes."
               >
                 <Disclaimer />
                 <OptionsTable options={results.options} bestMatch={results.bestMatch} />
                 <p className="text-base text-muted-foreground">
-                  Selling to employees? You may also be able to use your lifetime exemption — ask your accountant.
+                  Selling to employees? You may also be able to use your lifetime exemption. Ask your accountant.
                 </p>
                 <AfterTaxChart options={results.options} bestMatch={results.bestMatch} />
               </Section>
@@ -128,7 +128,7 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
                 id="fixes"
                 eyebrow="Top fixes"
                 title={fixesTitle(results.readiness.topFixes.length)}
-                intro="The changes that would raise your readiness score the most, and with it what a buyer will pay."
+                intro="The changes that would raise your score the most. A higher score usually means a better price."
               >
                 <TopFixes fixes={results.readiness.topFixes} />
               </Section>

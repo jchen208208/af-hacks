@@ -47,7 +47,7 @@ function KeyFacts({ option }: { option: ExitOption }) {
   const facts = [
     {
       value: estimated ? formatMoney(afterTax) : "Not estimated",
-      label: estimated ? "estimated after tax to you" : "after tax to you — see the note below",
+      label: estimated ? "estimated after tax to you" : "after tax to you (see the note below)",
       big: estimated,
     },
     { value: option.time, label: "time to complete" },

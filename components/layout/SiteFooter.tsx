@@ -7,8 +7,7 @@ export function SiteFooter() {
         <p className="font-heading text-lg font-semibold text-hero-foreground">Handover</p>
         <p>{DISCLAIMER_TEXT}</p>
         <p className="no-print">
-          Your answers stay in this browser. Nothing is sent anywhere, except the optional AI-written
-          summary if you choose to use it.
+          Your answers stay in this browser. Nothing is sent anywhere.
         </p>
       </div>
     </footer>

@@ -17,7 +17,7 @@ const RUNWAY_LABELS: Record<Snapshot["yearsToExit"], string> = {
   1: "You want to step away in about a year.",
   2: "You want to step away in about 2 years.",
   3: "You have 3–4 years.",
-  5: "You have 5 years or more — a strong position.",
+  5: "You have 5 years or more. That's plenty of time to prepare.",
 };
 
 function factorPoints(snapshot: Snapshot): Record<ReadinessFactor, number> {

@@ -157,6 +157,27 @@
   }
 }
 
+/* Lenis smooth scroll (components/layout/SmoothScroll.tsx): the rules from lenis/dist/lenis.css.
+   Lenis measures the page by watching <html> resize, so <html> must grow with the content (height: auto);
+   <body> keeps the footer at the bottom of short pages with min-h-dvh instead. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-vertical],
+.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
 @media print {
   /* Report page setup: running footer with the notice and page numbers (page margin boxes). */
   @page {
