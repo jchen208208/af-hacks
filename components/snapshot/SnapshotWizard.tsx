@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSnapshot } from "@/lib/state/SnapshotContext";
-import { STEP_SCHEMAS, STEP_TITLES } from "@/lib/snapshot/questions";
+import { STEP_TITLES, checkStep } from "@/lib/snapshot/questions";
 import { StepBusiness, StepNumbers, StepOperations, StepOwner } from "./steps";
 
 const STEPS = [StepBusiness, StepNumbers, StepOperations, StepOwner];
@@ -19,8 +18,6 @@ const STEP_INTROS = [
 
 export function SnapshotWizard() {
   const { draft, update, step, setStep, hydrated, loadDemo, isDemo } = useSnapshot();
-  // Errors are tied to the step they came from, so going back via the stepper never shows stale messages.
-  const [errors, setErrors] = useState<{ step: number; fields: Record<string, string> }>({ step: -1, fields: {} });
   const router = useRouter();
 
   if (!hydrated) {
@@ -29,30 +26,27 @@ export function SnapshotWizard() {
 
   const StepComponent = STEPS[step];
   const isLast = step === STEPS.length - 1;
-  const stepErrors = errors.step === step ? errors.fields : {};
-  const errorCount = Object.keys(stepErrors).length;
+  // Checked live: "Next" unlocks once every required question on this step is answered and valid.
+  const { valid, missing, errors } = checkStep(step, draft);
+  const errorCount = Object.keys(errors).length;
 
   const next = () => {
-    const result = STEP_SCHEMAS[step].safeParse(draft);
-    if (!result.success) {
-      const found: Record<string, string> = {};
-      for (const issue of result.error.issues) {
-        found[String(issue.path[0])] ??= issue.message;
-      }
-      setErrors({ step, fields: found });
-      return;
-    }
-    setErrors({ step: -1, fields: {} });
+    if (!valid) return;
     if (isLast) router.push("/results");
     else setStep(step + 1);
     window.scrollTo({ top: 0 });
   };
 
   const back = () => {
-    setErrors({ step: -1, fields: {} });
     setStep(step - 1);
     window.scrollTo({ top: 0 });
   };
+
+  const status = valid
+    ? null
+    : missing.length > 0
+      ? `${missing.length} required ${missing.length === 1 ? "question" : "questions"} left on this step`
+      : `Please fix ${errorCount === 1 ? "the answer" : `${errorCount} answers`} marked in red`;
 
   return (
     <div className="space-y-5">
@@ -83,21 +77,31 @@ export function SnapshotWizard() {
           }}
         >
           <div className="space-y-9 px-5 py-8 sm:px-10 sm:py-10">
-            {errorCount > 0 && (
-              <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-base font-medium text-destructive">
-                Please check {errorCount === 1 ? "the answer" : `${errorCount} answers`} marked below.
-              </p>
-            )}
-            <StepComponent draft={draft} update={update} errors={stepErrors} />
+            <p className="text-base text-muted-foreground">
+              Questions marked <span aria-hidden className="font-bold text-destructive">*</span>
+              <span className="sr-only">with an asterisk</span> are required.
+            </p>
+            <StepComponent draft={draft} update={update} errors={errors} />
           </div>
 
           <div className="flex flex-col-reverse gap-3 rounded-b-2xl border-t bg-muted/40 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-10">
             <Button type="button" variant="ghost" size="xl" className="h-14 w-full px-5 text-lg sm:w-auto" onClick={back} disabled={step === 0}>
               <ArrowLeft /> Back
             </Button>
-            <Button type="submit" size="xl" className="h-14 w-full px-8 text-lg shadow-sm sm:w-auto">
-              {isLast ? "See my results" : "Next"} <ArrowRight />
-            </Button>
+            <div className="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center">
+              <p id="step-status" aria-live="polite" className="text-center text-base text-muted-foreground sm:text-right">
+                {status}
+              </p>
+              <Button
+                type="submit"
+                size="xl"
+                disabled={!valid}
+                aria-describedby={status ? "step-status" : undefined}
+                className="h-14 w-full px-8 text-lg shadow-sm sm:w-auto"
+              >
+                {isLast ? "See my results" : "Next"} <ArrowRight />
+              </Button>
+            </div>
           </div>
         </form>
       </div>

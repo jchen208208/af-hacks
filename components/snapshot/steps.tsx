@@ -32,14 +32,14 @@ export function StepBusiness({ draft, update, errors }: StepProps) {
     <>
       <TextField label="Business name" hint="Optional" value={draft.businessName} onChange={(v) => update({ businessName: v })} />
       <div className={PAIR}>
-        <SelectField label="Industry" choices={INDUSTRIES} value={draft.industry} onChange={(v) => update({ industry: v })} error={errors.industry} />
-        <SelectField label="Province or territory" choices={PROVINCES} value={draft.province} onChange={(v) => update({ province: v })} error={errors.province} />
+        <SelectField required label="Industry" choices={INDUSTRIES} value={draft.industry} onChange={(v) => update({ industry: v })} error={errors.industry} />
+        <SelectField required label="Province or territory" choices={PROVINCES} value={draft.province} onChange={(v) => update({ province: v })} error={errors.province} />
       </div>
       <div className={PAIR}>
-        <NumberField label="Year founded" placeholder="e.g. 1991" value={draft.yearFounded} onChange={(v) => update({ yearFounded: v })} error={errors.yearFounded} />
-        <NumberField label="Number of employees" value={draft.employees} onChange={(v) => update({ employees: v })} error={errors.employees} />
+        <NumberField required label="Year founded" placeholder="e.g. 1991" value={draft.yearFounded} onChange={(v) => update({ yearFounded: v })} error={errors.yearFounded} />
+        <NumberField required label="Number of employees" value={draft.employees} onChange={(v) => update({ employees: v })} error={errors.employees} />
       </div>
-      <NumberField label="Annual revenue" prefix="$" hint="Total sales last year" value={draft.revenue} onChange={(v) => update({ revenue: v })} error={errors.revenue} />
+      <NumberField required label="Annual revenue" prefix="$" hint="Total sales last year" value={draft.revenue} onChange={(v) => update({ revenue: v })} error={errors.revenue} />
     </>
   );
 }
@@ -48,6 +48,7 @@ export function StepNumbers({ draft, update, errors }: StepProps) {
   return (
     <>
       <NumberField
+        required
         label="Annual profit before your pay and taxes"
         prefix="$"
         help="Accountants call this seller's discretionary earnings (SDE): your profit plus your own salary, perks and one-time costs, before income tax. It's roughly what a new owner could take home."
@@ -56,6 +57,7 @@ export function StepNumbers({ draft, update, errors }: StepProps) {
         error={errors.sde}
       />
       <NumberField
+        required
         label="Approximate value of equipment and inventory"
         prefix="$"
         value={draft.tangibleAssets}
@@ -64,6 +66,7 @@ export function StepNumbers({ draft, update, errors }: StepProps) {
       />
       <div className="space-y-3">
         <NumberField
+          required
           label="What you originally paid for your shares"
           prefix="$"
           hint="Most owners who started their company paid a nominal amount like $100."
@@ -86,9 +89,10 @@ export function StepNumbers({ draft, update, errors }: StepProps) {
 export function StepOperations({ draft, update, errors }: StepProps) {
   return (
     <>
-      <ChoiceField label="How are your financial records kept?" choices={RECORDS} value={draft.records} onChange={(v) => update({ records: v })} error={errors.records} />
-      <ChoiceField label="Could the business run for 4 weeks without you?" columns={3} choices={RUN_WITHOUT_OWNER} value={draft.runWithoutOwner} onChange={(v) => update({ runWithoutOwner: v })} error={errors.runWithoutOwner} />
+      <ChoiceField required label="How are your financial records kept?" choices={RECORDS} value={draft.records} onChange={(v) => update({ records: v })} error={errors.records} />
+      <ChoiceField required label="Could the business run for 4 weeks without you?" columns={3} choices={RUN_WITHOUT_OWNER} value={draft.runWithoutOwner} onChange={(v) => update({ runWithoutOwner: v })} error={errors.runWithoutOwner} />
       <ChoiceField
+        required
         label="How many people could run day-to-day operations?"
         columns={3}
         choices={MANAGERS}
@@ -96,8 +100,8 @@ export function StepOperations({ draft, update, errors }: StepProps) {
         onChange={(v) => update({ managers: Number(v) as 0 | 1 | 2 })}
         error={errors.managers}
       />
-      <ChoiceField label="How much of your revenue comes from your largest customer?" columns={4} choices={TOP_CUSTOMER} value={draft.topCustomerShare} onChange={(v) => update({ topCustomerShare: v })} error={errors.topCustomerShare} />
-      <ChoiceField label="How much of how you work is written down?" columns={3} choices={PROCESSES} value={draft.processes} onChange={(v) => update({ processes: v })} error={errors.processes} />
+      <ChoiceField required label="How much of your revenue comes from your largest customer?" columns={4} choices={TOP_CUSTOMER} value={draft.topCustomerShare} onChange={(v) => update({ topCustomerShare: v })} error={errors.topCustomerShare} />
+      <ChoiceField required label="How much of how you work is written down?" columns={3} choices={PROCESSES} value={draft.processes} onChange={(v) => update({ processes: v })} error={errors.processes} />
     </>
   );
 }
@@ -105,8 +109,9 @@ export function StepOperations({ draft, update, errors }: StepProps) {
 export function StepOwner({ draft, update, errors }: StepProps) {
   return (
     <>
-      <NumberField label="Your age" value={draft.ownerAge} onChange={(v) => update({ ownerAge: v })} error={errors.ownerAge} />
+      <NumberField required label="Your age" value={draft.ownerAge} onChange={(v) => update({ ownerAge: v })} error={errors.ownerAge} />
       <ChoiceField
+        required
         label="When would you like to step away?"
         columns={3}
         choices={YEARS_TO_EXIT}
@@ -114,7 +119,7 @@ export function StepOwner({ draft, update, errors }: StepProps) {
         onChange={(v) => update({ yearsToExit: Number(v) as 0 | 1 | 2 | 3 | 5 })}
         error={errors.yearsToExit}
       />
-      <ChoiceField label="Is a family member interested in taking over?" columns={3} choices={FAMILY_INTEREST} value={draft.familyInterest} onChange={(v) => update({ familyInterest: v })} error={errors.familyInterest} />
+      <ChoiceField required label="Is a family member interested in taking over?" columns={3} choices={FAMILY_INTEREST} value={draft.familyInterest} onChange={(v) => update({ familyInterest: v })} error={errors.familyInterest} />
       <RankField<Priority>
         label="What matters most to you?"
         hint="Put the most important at the top."

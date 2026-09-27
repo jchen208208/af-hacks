@@ -94,15 +94,19 @@ export const DEFAULT_SHARES_COST_BASE = 100;
 
 const thisYear = new Date().getFullYear();
 const money = (label: string) =>
-  z.number({ error: `Enter ${label}` }).min(0, `${label} can't be negative`);
+  z.number({ error: `Enter ${label}` }).min(0, "Can't be negative");
 
 export const STEP_SCHEMAS = [
   z.object({
     businessName: z.string().optional(),
     industry: z.enum(INDUSTRIES.map((c) => c.value) as [Industry, ...Industry[]], { error: "Choose an industry" }),
     province: z.enum(PROVINCES.map((c) => c.value) as [Province, ...Province[]], { error: "Choose a province or territory" }),
-    yearFounded: z.number({ error: "Enter the year founded" }).int().min(1800).max(thisYear, "That year is in the future"),
-    employees: z.number({ error: "Enter the number of employees" }).int().min(0),
+    yearFounded: z
+      .number({ error: "Enter the year founded" })
+      .int("Enter a year like 1991")
+      .min(1800, "Enter a year like 1991")
+      .max(thisYear, "That year is in the future"),
+    employees: z.number({ error: "Enter the number of employees" }).int("Enter a whole number").min(0, "Can't be negative"),
     revenue: money("annual revenue"),
   }),
   z.object({
@@ -118,12 +122,45 @@ export const STEP_SCHEMAS = [
     processes: z.enum(["most", "some", "few"], { error: "Choose one" }),
   }),
   z.object({
-    ownerAge: z.number({ error: "Enter your age" }).int().min(18).max(110),
+    ownerAge: z
+      .number({ error: "Enter your age" })
+      .int("Enter your age in whole years")
+      .min(18, "Enter an age between 18 and 110")
+      .max(110, "Enter an age between 18 and 110"),
     yearsToExit: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(5)], { error: "Choose one" }),
     familyInterest: z.enum(["yes", "maybe", "no"], { error: "Choose one" }),
     priorities: z.array(z.enum(["price", "employees", "local", "speed"])).length(4),
   }),
 ] as const;
+
+export interface StepCheck {
+  valid: boolean;
+  /** Required questions not answered yet (they show a red asterisk, not an error). */
+  missing: string[];
+  /** Answered questions whose value fails validation, e.g. a year in the future. */
+  errors: Record<string, string>;
+}
+
+/** Checks one wizard step. Blank answers count as missing; filled-in bad values are errors. */
+export function checkStep(step: number, draft: Partial<Snapshot>): StepCheck {
+  const result = STEP_SCHEMAS[step].safeParse(draft);
+  const missing = new Set<string>();
+  const errors: Record<string, string> = {};
+  if (!result.success) {
+    for (const issue of result.error.issues) {
+      const field = String(issue.path[0]);
+      if (draft[field as keyof Snapshot] === undefined) missing.add(field);
+      else errors[field] ??= issue.message;
+    }
+  }
+  return { valid: result.success, missing: [...missing], errors };
+}
+
+/** Index of the first step with required questions left, or the step count when all are done. */
+export function firstIncompleteStep(draft: Partial<Snapshot>): number {
+  const i = STEP_SCHEMAS.findIndex((_, step) => !checkStep(step, draft).valid);
+  return i === -1 ? STEP_SCHEMAS.length : i;
+}
 
 export const SNAPSHOT_SCHEMA = STEP_SCHEMAS[0]
   .extend(STEP_SCHEMAS[1].shape)

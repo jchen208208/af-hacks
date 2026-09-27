@@ -21,18 +21,32 @@ interface FieldShellProps {
   hint?: string;
   help?: string;
   error?: string;
+  required?: boolean;
   children: React.ReactNode;
   as?: "div" | "fieldset";
 }
 
-function FieldShell({ id, label, hint, help, error, children, as = "div" }: FieldShellProps) {
+/** Red asterisk after a required question's label; screen readers hear "required" instead. */
+export function RequiredMark() {
+  return (
+    <>
+      <span aria-hidden className="ml-1 font-bold text-destructive">
+        *
+      </span>
+      <span className="sr-only"> (required)</span>
+    </>
+  );
+}
+
+function FieldShell({ id, label, hint, help, error, required, children, as = "div" }: FieldShellProps) {
   const Wrapper = as;
   const LabelEl = as === "fieldset" ? "legend" : Label;
   return (
-    <Wrapper className="min-w-0 space-y-2.5" aria-describedby={error ? `${id}-error` : undefined}>
+    <Wrapper className="group/field min-w-0 space-y-2.5" aria-describedby={error ? `${id}-error` : undefined}>
       <div className="flex items-center gap-2">
-        <LabelEl htmlFor={as === "fieldset" ? undefined : id} className="text-lg leading-snug font-semibold">
+        <LabelEl htmlFor={as === "fieldset" ? undefined : id} className="block text-lg leading-snug font-semibold">
           {label}
+          {required && <RequiredMark />}
         </LabelEl>
         {help && (
           <Tooltip>
@@ -51,8 +65,12 @@ function FieldShell({ id, label, hint, help, error, children, as = "div" }: Fiel
       </div>
       {hint && <p className="text-base text-muted-foreground">{hint}</p>}
       {children}
+      {/* Answers are checked live, so hide the message while the owner is still typing in this field. */}
       {error && (
-        <p id={`${id}-error`} className="flex items-center gap-1.5 text-base font-medium text-destructive">
+        <p
+          id={`${id}-error`}
+          className="flex items-center gap-1.5 text-base font-medium text-destructive group-has-[input:focus]/field:hidden"
+        >
           <CircleAlert className="size-4 shrink-0" aria-hidden />
           {error}
         </p>
@@ -92,6 +110,7 @@ export function NumberField(props: {
   error?: string;
   prefix?: string;
   placeholder?: string;
+  required?: boolean;
 }) {
   const id = useId();
   return (
@@ -106,6 +125,7 @@ export function NumberField(props: {
           id={id}
           type="number"
           inputMode="numeric"
+          aria-required={props.required}
           aria-invalid={!!props.error}
           className={cn(CONTROL, "tabular-nums", props.prefix && "pl-9")}
           value={props.value ?? ""}
@@ -124,12 +144,13 @@ export function SelectField<T extends string>(props: {
   choices: Choice<T>[];
   placeholder?: string;
   error?: string;
+  required?: boolean;
 }) {
   const id = useId();
   return (
     <FieldShell id={id} {...props}>
       <Select value={props.value} onValueChange={(v) => props.onChange(v as T)}>
-        <SelectTrigger id={id} aria-invalid={!!props.error} className={cn(CONTROL, "w-full max-w-lg data-[size=default]:h-14")}>
+        <SelectTrigger id={id} aria-required={props.required} aria-invalid={!!props.error} className={cn(CONTROL, "w-full max-w-lg data-[size=default]:h-14")}>
           <SelectValue placeholder={props.placeholder ?? "Choose one"} />
         </SelectTrigger>
         <SelectContent>
@@ -154,6 +175,7 @@ export function ChoiceField<T extends string>(props: {
   help?: string;
   error?: string;
   columns?: 2 | 3 | 4;
+  required?: boolean;
 }) {
   const id = useId();
   const cols = { 2: "sm:grid-cols-2", 3: "sm:grid-cols-3", 4: "sm:grid-cols-2 lg:grid-cols-4" }[props.columns ?? 2];
@@ -162,6 +184,7 @@ export function ChoiceField<T extends string>(props: {
       <RadioGroup
         value={props.value ?? ""}
         onValueChange={(v) => props.onChange(v as T)}
+        aria-required={props.required}
         aria-invalid={!!props.error}
         className={cn("grid gap-3", cols)}
       >
