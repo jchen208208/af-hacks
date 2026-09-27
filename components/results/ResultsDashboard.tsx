@@ -16,14 +16,23 @@ import { KeyFigures } from "./KeyFigures";
 import { OptionsTable } from "./OptionsTable";
 import { ReadinessSection } from "./ReadinessSection";
 import { SectionNav, type NavSection } from "./SectionNav";
+import { TopFixes } from "./TopFixes";
 import { ValueRange } from "./ValueRange";
+import { WhatIf } from "./WhatIf";
 
 const SECTIONS: NavSection[] = [
   { id: "options", label: "Exit options" },
   { id: "readiness", label: "Readiness" },
   { id: "value", label: "Value" },
+  { id: "fixes", label: "Top fixes" },
+  { id: "whatif", label: "What if" },
   { id: "eot", label: "Selling to employees" },
 ];
+
+function fixesTitle(count: number): string {
+  if (count === 0) return "Your top fixes";
+  return count === 1 ? "Your top fix" : `Your top ${count} fixes`;
+}
 
 /** One section of the continuous results sheet; siblings are split by the sheet's dividers. */
 function Section({
@@ -86,7 +95,7 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
           <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-band to-transparent" />
 
           <div className="mx-auto max-w-6xl px-4 pt-12 pb-24 sm:px-6 sm:pt-16">
-            {/* One continuous sheet so the four sections read as a single connected page, split only by dividers. */}
+            {/* One continuous sheet so the sections read as a single connected page, split only by dividers. */}
             <Sheet className="divide-y p-5 sm:p-10 lg:p-14">
               <Section
                 id="options"
@@ -113,6 +122,30 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
 
               <Section id="value" eyebrow="Value" title="What your business may be worth">
                 <ValueRange valuation={results.valuation} sde={snapshot.sde} />
+              </Section>
+
+              <Section
+                id="fixes"
+                eyebrow="Top fixes"
+                title={fixesTitle(results.readiness.topFixes.length)}
+                intro="The changes that would raise your readiness score the most, and with it what a buyer will pay."
+              >
+                <TopFixes fixes={results.readiness.topFixes} />
+              </Section>
+
+              <Section
+                id="whatif"
+                eyebrow="What if"
+                title="What if you made some changes?"
+                intro="Change any answer below and watch your score, value and what you'd keep move. The rest of this page still shows your real answers."
+              >
+                {/* Keyed so switching between the example and your own answers starts a fresh scenario. */}
+                <WhatIf
+                  key={showingExample ? "example" : "own"}
+                  snapshot={snapshot}
+                  eotAnswers={eotAnswers}
+                  results={results}
+                />
               </Section>
 
               <Section
