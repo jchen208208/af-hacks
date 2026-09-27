@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { Bar, BarChart, Cell, LabelList, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import type { ExitOption, OptionId } from "@/lib/engine/types";
 import { formatMoney } from "@/lib/format";
@@ -13,12 +14,25 @@ const SHORT_NAMES: Record<OptionId, string> = {
   winddown: "Wind down",
 };
 
+/** Phones get a narrower label column (and "Employees" for the EOT) so the bars keep their room. */
+const PHONE_QUERY = "(max-width: 639px)";
+const subscribePhone = (onChange: () => void) => {
+  const mq = window.matchMedia(PHONE_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+
 /** Horizontal bars of after-tax money per option; best match in the brand green. */
 export function AfterTaxChart({ options, bestMatch }: { options: ExitOption[]; bestMatch: OptionId }) {
+  const phone = useSyncExternalStore(subscribePhone, () => window.matchMedia(PHONE_QUERY).matches, () => false);
   const data = options
     .filter((o) => o.afterTax !== undefined && o.status !== "unavailable")
     // Not `id`: Recharts copies data fields onto the bar <path>, which would clash with the page's #eot section.
-    .map((o) => ({ optionId: o.id, name: SHORT_NAMES[o.id], afterTax: o.afterTax as number }))
+    .map((o) => ({
+      optionId: o.id,
+      name: phone && o.id === "eot" ? "Employees" : SHORT_NAMES[o.id],
+      afterTax: o.afterTax as number,
+    }))
     .sort((a, b) => b.afterTax - a.afterTax);
 
   return (
@@ -41,10 +55,10 @@ export function AfterTaxChart({ options, bestMatch }: { options: ExitOption[]; b
             <YAxis
               type="category"
               dataKey="name"
-              width={124}
+              width={phone ? 138 : 150}
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "var(--foreground)", fontSize: 14 }}
+              tick={{ fill: "var(--foreground)", fontSize: phone ? 13 : 14 }}
             />
             <Bar dataKey="afterTax" radius={[0, 8, 8, 0]} barSize={30} isAnimationActive={false}>
               {data.map((d) => (

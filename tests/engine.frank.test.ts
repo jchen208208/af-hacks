@@ -43,20 +43,20 @@ describe("Frank (demo persona)", () => {
 
   it("shows EOT after-tax ≈$4.85M vs Canadian buyer ≈$3.89M", () => {
     near(opt("canadian").price, 4_849_200);
-    near(opt("canadian").tax, 963_299);
-    near(opt("canadian").afterTax, 3_885_901);
+    near(opt("canadian").tax, 956_608);
+    near(opt("canadian").afterTax, 3_892_592);
 
     near(opt("eot").price, 4_849_200);
     expect(opt("eot").tax).toBe(0);
     near(opt("eot").afterTax, 4_849_200);
-    near((opt("eot").afterTax as number) - (opt("canadian").afterTax as number), 963_299);
+    near((opt("eot").afterTax as number) - (opt("canadian").afterTax as number), 956_608);
   });
 
-  it("prices private equity ≈$5.33M with ≈$4.24M after tax", () => {
+  it("prices private equity ≈$5.33M with ≈$4.25M after tax", () => {
     expect(opt("pe").status).toBe("available");
     near(opt("pe").price, 5_334_120);
-    near(opt("pe").tax, 1_093_088);
-    near(opt("pe").afterTax, 4_241_032);
+    near(opt("pe").tax, 1_086_397);
+    near(opt("pe").afterTax, 4_247_723);
   });
 
   it("greys out family and prices wind-down at ≈$540K", () => {

@@ -45,7 +45,7 @@ describe("plan summary template", () => {
     expect(summary("canadian")).toContain("$3.89M");
     const pe = summary("pe");
     expect(pe).toContain("$5.33M");
-    expect(pe).toContain("$4.24M");
+    expect(pe).toContain("$4.25M");
     expect(pe).toMatch(/jobs of your 22 employees could be at risk/);
   });
 

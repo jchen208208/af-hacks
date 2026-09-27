@@ -22,7 +22,7 @@ describe("exit options", () => {
 
     const smallSde = option({ ...FRANK, sde: 999_999 }, "pe");
     expect(smallSde.status).toBe("unavailable");
-    expect(smallSde.statusNote).toBe("Unlikely to attract interest");
+    expect(smallSde.statusNote).toBe("Too small for these buyers: they look for $1M+ yearly profit");
     expect(smallSde.price).toBeUndefined();
     expect(smallSde.afterTax).toBeUndefined();
 
@@ -30,6 +30,10 @@ describe("exit options", () => {
     const lowReadiness = option({ ...FRANK, processes: "few", topCustomerShare: "gt50" }, "pe");
     expect(lowReadiness.status).toBe("unavailable");
     expect(lowReadiness.tax).toBeUndefined();
+    expect(lowReadiness.statusNote).toBe("Not ready enough for these buyers: they look for a readiness score of 60+");
+
+    const both = option({ ...FRANK, sde: 500_000, processes: "few", topCustomerShare: "gt50" }, "pe");
+    expect(both.statusNote).toMatch(/^Too early for these buyers: they look for \$1M\+ yearly profit and a readiness score of 60\+$/);
   });
 
   it("greys out family when familyInterest is 'no'", () => {

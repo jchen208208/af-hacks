@@ -8,6 +8,7 @@ import { Disclaimer } from "@/components/layout/Disclaimer";
 import { NeedsSnapshot } from "@/components/layout/NeedsSnapshot";
 import { PageHero, heroButtonClass } from "@/components/layout/PageHero";
 import { PrintButton } from "@/components/layout/PrintButton";
+import { PlanReport } from "@/components/report/PlanReport";
 import { runEngine, runPlan } from "@/lib/engine";
 import type { ExitOption, OptionId, Snapshot } from "@/lib/engine/types";
 import { formatMoney } from "@/lib/format";
@@ -15,7 +16,7 @@ import { planSummary } from "@/lib/narrative/template";
 import { useSnapshot } from "@/lib/state/SnapshotContext";
 import { cn } from "@/lib/utils";
 import { AdvisorCards } from "./AdvisorCards";
-import { Checklist } from "./Checklist";
+import { Checklist, useChecklist } from "./Checklist";
 import { Timeline } from "./Timeline";
 
 export const PLAN_TITLES: Record<OptionId, string> = {
@@ -88,59 +89,70 @@ function KeyFacts({ option }: { option: ExitOption }) {
 }
 
 function PlanBody({ option, snapshot }: { option: OptionId; snapshot: Snapshot }) {
-  const { eotAnswers } = useSnapshot();
+  const { eotAnswers, showingExample } = useSnapshot();
   const results = runEngine(snapshot, eotAnswers);
   const steps = runPlan(option, snapshot, eotAnswers);
   const chosen = results.options.find((o) => o.id === option);
+  const { done, toggle } = useChecklist(option);
 
   // Template summary from engine output (Phase 6 can swap in the AI narrative, keeping this as the fallback).
   const summary = planSummary(option, snapshot, results);
 
   return (
     <>
-      <PageHero
-        eyebrow="Transition plan"
-        title={<span className="print:block print:text-3xl">Your plan: {PLAN_TITLES[option]}</span>}
-        actions={
-          <>
-            <Button asChild variant="ghost" size="xl" className={heroButtonClass.outline}>
-              <Link href="/results#options">
-                <ArrowLeft /> Back to exit options
-              </Link>
-            </Button>
-            <PrintButton className={heroButtonClass.outline} />
-          </>
-        }
-      >
-        {/* Title and summary are smaller in print so the plan stays on 2 pages (block so the
-            smaller line height applies instead of the hero's). */}
-        <span className="print:block print:text-base print:leading-snug">{summary}</span>
-      </PageHero>
+      {/* Print shows a document-style report instead of the web page. */}
+      <PlanReport
+        option={option}
+        chosen={chosen}
+        snapshot={snapshot}
+        results={results}
+        steps={steps}
+        summary={summary}
+        done={done}
+        isExample={showingExample}
+      />
+      <div className="print:hidden">
+        <PageHero
+          eyebrow="Transition plan"
+          title={<span className="print:block print:text-3xl">Your plan: {PLAN_TITLES[option]}</span>}
+          actions={
+            <>
+              <Button asChild variant="ghost" size="xl" className={heroButtonClass.outline}>
+                <Link href="/results#options">
+                  <ArrowLeft /> Back to exit options
+                </Link>
+              </Button>
+              <PrintButton className={heroButtonClass.outline} />
+            </>
+          }
+        >
+          {/* Title and summary are smaller in print so the plan stays on 2 pages (block so the
+              smaller line height applies instead of the hero's). */}
+          <span className="print:block print:text-base print:leading-snug">{summary}</span>
+        </PageHero>
 
-      {chosen && <KeyFacts option={chosen} />}
+        {chosen && <KeyFacts option={chosen} />}
 
-      <div className="mx-auto max-w-6xl space-y-16 px-4 py-14 sm:px-6 print:space-y-5 print:px-0 print:py-4">
-        <Disclaimer />
+        <div className="mx-auto max-w-6xl space-y-16 px-4 py-14 sm:px-6 print:space-y-5 print:px-0 print:py-4">
+          <Disclaimer />
 
-        <section aria-labelledby="timeline-title" className="space-y-8 print:space-y-3">
-          <SectionHeading id="timeline-title" eyebrow="Your timeline" title="Step by step" />
-          <div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8 print:rounded-none print:border-0 print:p-0 print:shadow-none">
-            <Timeline steps={steps} />
-          </div>
-        </section>
+          <section aria-labelledby="timeline-title" className="space-y-8 print:space-y-3">
+            <SectionHeading id="timeline-title" eyebrow="Your timeline" title="Step by step" />
+            <div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8 print:rounded-none print:border-0 print:p-0 print:shadow-none">
+              <Timeline steps={steps} />
+            </div>
+          </section>
 
-        <section aria-labelledby="checklist-title" className="space-y-8 print:space-y-3">
-          <SectionHeading id="checklist-title" eyebrow="Track your progress" title="Your checklist" />
-          <Checklist option={option} steps={steps} />
-        </section>
+          <section aria-labelledby="checklist-title" className="space-y-8 print:space-y-3">
+            <SectionHeading id="checklist-title" eyebrow="Track your progress" title="Your checklist" />
+            <Checklist steps={steps} done={done} onToggle={toggle} />
+          </section>
 
-        <section aria-labelledby="advisors-title" className="space-y-8 print:space-y-3">
-          <SectionHeading id="advisors-title" eyebrow="Your team" title="Who to talk to" />
-          <AdvisorCards option={option} />
-        </section>
+          <section aria-labelledby="advisors-title" className="space-y-8 print:space-y-3">
+            <SectionHeading id="advisors-title" eyebrow="Your team" title="Who to talk to" />
+            <AdvisorCards option={option} />
+          </section>
 
-        {/* Screen only: the printed plan stays at 2 pages (the disclaimer still prints). */}
-        <div className="print:hidden">
           <AssumptionsExpander />
         </div>
       </div>
@@ -149,5 +161,5 @@ function PlanBody({ option, snapshot }: { option: OptionId; snapshot: Snapshot }
 }
 
 export function TransitionPlan({ option }: { option: OptionId }) {
-  return <NeedsSnapshot>{(snapshot) => <PlanBody option={option} snapshot={snapshot} />}</NeedsSnapshot>;
+  return <NeedsSnapshot kind="plan">{(snapshot) => <PlanBody option={option} snapshot={snapshot} />}</NeedsSnapshot>;
 }

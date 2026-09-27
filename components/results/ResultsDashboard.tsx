@@ -5,6 +5,7 @@ import { Disclaimer } from "@/components/layout/Disclaimer";
 import { NeedsSnapshot } from "@/components/layout/NeedsSnapshot";
 import { PageHero, heroButtonClass } from "@/components/layout/PageHero";
 import { PrintButton } from "@/components/layout/PrintButton";
+import { ResultsReport } from "@/components/report/ResultsReport";
 import { runEngine } from "@/lib/engine";
 import type { Snapshot } from "@/lib/engine/types";
 import { useSnapshot } from "@/lib/state/SnapshotContext";
@@ -44,7 +45,8 @@ function Section({
       aria-labelledby={`${id}-title`}
       className="scroll-mt-20 space-y-8 py-12 first:pt-2 sm:py-16 sm:first:pt-2 print:space-y-3 print:py-6"
     >
-      <div className="max-w-3xl space-y-3 print:space-y-1">
+      {/* In print, never leave a section heading stranded at the bottom of a page. */}
+      <div className="max-w-3xl space-y-3 print:break-after-avoid print:space-y-1">
         <p className="text-sm font-semibold tracking-[0.12em] text-primary uppercase">{eyebrow}</p>
         <h2 id={`${id}-title`} className="text-3xl font-semibold sm:text-4xl print:text-2xl">
           {title}
@@ -63,70 +65,74 @@ function Dashboard({ snapshot }: { snapshot: Snapshot }) {
 
   return (
     <>
-      <PageHero
-        eyebrow={showingExample ? "Example" : "Your results"}
-        title={`Exit options for ${name}`}
-        actions={<PrintButton className={heroButtonClass.outline} />}
-      >
-        Every realistic way to step away, side by side, with what you&apos;d keep after tax.
-      </PageHero>
+      {/* Print shows a document-style report instead of the web page. */}
+      <ResultsReport snapshot={snapshot} results={results} eotAnswers={eotAnswers} isExample={showingExample} />
+      <div className="print:hidden">
+        <PageHero
+          eyebrow={showingExample ? "Example" : "Your results"}
+          title={`Exit options for ${name}`}
+          actions={<PrintButton className={heroButtonClass.outline} />}
+        >
+          Every realistic way to step away, side by side, with what you&apos;d keep after tax.
+        </PageHero>
 
-      <KeyFigures results={results} />
+        <KeyFigures results={results} />
 
-      <SectionNav sections={SECTIONS} />
+        <SectionNav sections={SECTIONS} />
 
-      {/* Faceted green field; beige sheets float on it for the dense reading. Negative bottom margin lets the
-          green run into the footer's top margin so there's no beige strip before the dark footer. */}
-      <FacetField className="-mb-16 print:mb-0">
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-band to-transparent print:hidden" />
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-band to-transparent print:hidden" />
+        {/* Faceted green field; beige sheets float on it for the dense reading. Negative bottom margin lets the
+            green run into the footer's top margin so there's no beige strip before the dark footer. */}
+        <FacetField className="-mb-16 print:mb-0">
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-band to-transparent print:hidden" />
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-band to-transparent print:hidden" />
 
-        <div className="mx-auto max-w-6xl px-4 pt-12 pb-24 sm:px-6 sm:pt-16 print:px-0 print:py-0">
-          {/* One continuous sheet so the four sections read as a single connected page, split only by dividers. */}
-          <Sheet className="divide-y p-5 sm:p-10 lg:p-14">
-            <Section
-              id="options"
-              eyebrow="Compare"
-              title="Your exit options"
-              intro="Price, tax and what you keep — plus what happens to your people and how long it takes."
-            >
-              <Disclaimer />
-              <OptionsTable options={results.options} bestMatch={results.bestMatch} />
-              <p className="text-base text-muted-foreground">
-                Selling to employees? You may also be able to use your lifetime exemption — ask your accountant.
-              </p>
-              <AfterTaxChart options={results.options} bestMatch={results.bestMatch} />
-            </Section>
+          <div className="mx-auto max-w-6xl px-4 pt-12 pb-24 sm:px-6 sm:pt-16 print:px-0 print:py-0">
+            {/* One continuous sheet so the four sections read as a single connected page, split only by dividers. */}
+            <Sheet className="divide-y p-5 sm:p-10 lg:p-14">
+              <Section
+                id="options"
+                eyebrow="Compare"
+                title="Your exit options"
+                intro="Price, tax and what you keep — plus what happens to your people and how long it takes."
+              >
+                <Disclaimer />
+                <OptionsTable options={results.options} bestMatch={results.bestMatch} />
+                <p className="text-base text-muted-foreground">
+                  Selling to employees? You may also be able to use your lifetime exemption — ask your accountant.
+                </p>
+                <AfterTaxChart options={results.options} bestMatch={results.bestMatch} />
+              </Section>
 
-            <Section
-              id="readiness"
-              eyebrow="Readiness"
-              title="How ready is your business to sell?"
-              intro="Buyers pay more for a business that runs well without its owner. Here's where you stand today."
-            >
-              <ReadinessSection readiness={results.readiness} />
-            </Section>
+              <Section
+                id="readiness"
+                eyebrow="Readiness"
+                title="How ready is your business to sell?"
+                intro="Buyers pay more for a business that runs well without its owner. Here's where you stand today."
+              >
+                <ReadinessSection readiness={results.readiness} />
+              </Section>
 
-            <Section id="value" eyebrow="Value" title="What your business may be worth">
-              <ValueRange valuation={results.valuation} sde={snapshot.sde} />
-            </Section>
+              <Section id="value" eyebrow="Value" title="What your business may be worth">
+                <ValueRange valuation={results.valuation} sde={snapshot.sde} />
+              </Section>
 
-            <Section
-              id="eot"
-              eyebrow="Employee ownership"
-              title="Could you sell to your employees?"
-              intro="Six quick questions about the Employee Ownership Trust rules."
-            >
-              <EotCheck result={results.eot} />
-            </Section>
+              <Section
+                id="eot"
+                eyebrow="Employee ownership"
+                title="Could you sell to your employees?"
+                intro="Six quick questions about the Employee Ownership Trust rules."
+              >
+                <EotCheck result={results.eot} />
+              </Section>
 
-            <div className="space-y-4 pt-12 sm:pt-16 print:pt-6">
-              <AssumptionsExpander />
-              <Disclaimer />
-            </div>
-          </Sheet>
-        </div>
-      </FacetField>
+              <div className="space-y-4 pt-12 sm:pt-16">
+                <AssumptionsExpander />
+                <Disclaimer />
+              </div>
+            </Sheet>
+          </div>
+        </FacetField>
+      </div>
     </>
   );
 }

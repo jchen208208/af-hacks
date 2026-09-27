@@ -3,6 +3,7 @@
 import {
   EOT_EXEMPTION,
   LCGE,
+  LCGE_LABEL,
   OPTION_PRICE_FACTOR,
   PE_MIN_READINESS,
   PE_MIN_SDE,
@@ -27,7 +28,7 @@ export const OPTION_TEXT: Record<OptionId, OptionText> = {
   family: {
     id: "family",
     name: "Pass it to family",
-    exemptionLabel: "Lifetime exemption ($1.25M)",
+    exemptionLabel: `Lifetime exemption (${LCGE_LABEL})`,
     howPaid: "Mostly over time",
     employees: "Likely kept",
     staysCanadian: "Yes",
@@ -37,7 +38,7 @@ export const OPTION_TEXT: Record<OptionId, OptionText> = {
   canadian: {
     id: "canadian",
     name: "Sell to a Canadian buyer",
-    exemptionLabel: "Lifetime exemption ($1.25M)",
+    exemptionLabel: `Lifetime exemption (${LCGE_LABEL})`,
     howPaid: "50–70% at close, the rest over a few years",
     employees: "Usually kept",
     staysCanadian: "Yes",
@@ -47,7 +48,7 @@ export const OPTION_TEXT: Record<OptionId, OptionText> = {
   pe: {
     id: "pe",
     name: "Sell to private equity or a large company",
-    exemptionLabel: "Lifetime exemption ($1.25M)",
+    exemptionLabel: `Lifetime exemption (${LCGE_LABEL})`,
     howPaid: "Mostly at close",
     employees: "At risk of consolidation",
     staysCanadian: "Not guaranteed",
@@ -77,6 +78,16 @@ export const OPTION_TEXT: Record<OptionId, OptionText> = {
 };
 
 const OPTION_ORDER: OptionId[] = ["family", "canadian", "pe", "eot", "winddown"];
+
+/** Why private equity is greyed out, naming the bar the owner misses (plan 7.5 rule). */
+function peUnavailableNote(snapshot: Snapshot, readiness: ReadinessResult): string {
+  const small = snapshot.sde < PE_MIN_SDE;
+  const notReady = readiness.score < PE_MIN_READINESS;
+  const minProfit = `$${PE_MIN_SDE / 1_000_000}M`;
+  if (small && notReady) return `Too early for these buyers: they look for ${minProfit}+ yearly profit and a readiness score of ${PE_MIN_READINESS}+`;
+  if (small) return `Too small for these buyers: they look for ${minProfit}+ yearly profit`;
+  return `Not ready enough for these buyers: they look for a readiness score of ${PE_MIN_READINESS}+`;
+}
 
 function priced(snapshot: Snapshot, id: OptionId, price: number, exemption: number): ExitOption {
   const { tax, afterTax } = computeTax({
@@ -109,7 +120,7 @@ export function computeOptions(
 
       case "pe":
         if (snapshot.sde < PE_MIN_SDE || readiness.score < PE_MIN_READINESS) {
-          return { ...OPTION_TEXT.pe, status: "unavailable", statusNote: "Unlikely to attract interest" };
+          return { ...OPTION_TEXT.pe, status: "unavailable", statusNote: peUnavailableNote(snapshot, readiness) };
         }
         return priced(snapshot, id, mid * OPTION_PRICE_FACTOR.pe, LCGE);
 

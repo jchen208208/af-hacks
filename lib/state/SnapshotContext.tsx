@@ -1,7 +1,8 @@
 "use client";
 
-// Holds the owner's answers in React context and mirrors them to localStorage,
-// so a refresh never loses data (plan 6.2). No data leaves the browser.
+// Holds the owner's answers in React context and mirrors them to localStorage, so the
+// results and plan survive a refresh. Refreshing the wizard itself starts it over (user
+// decision, overrides plan 6.2). No data leaves the browser.
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { EotAnswer, EotAnswers, EotQuestionId, Snapshot } from "@/lib/engine/types";
@@ -82,8 +83,13 @@ export function SnapshotProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = readStorage();
+    // A full page load (refresh) of the wizard starts it over: the owner's answers, step and
+    // EOT answers are wiped. Moving between pages in the app keeps them (the provider stays
+    // mounted), and refreshing /results or /plan still shows the saved results.
+    const freshWizard = window.location.pathname.startsWith("/snapshot");
+    const next = stored && freshWizard ? { ...stored, draft: INITIAL.draft, step: 0, eotAnswers: {}, draftIsExample: false } : stored;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration from localStorage
-    if (stored) setState(stored);
+    if (next) setState(next);
     setHydrated(true);
   }, []);
 

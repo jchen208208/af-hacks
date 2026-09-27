@@ -81,8 +81,14 @@ export const VALUE_RANGE_SPREAD = 0.15;
 /** Capital gains inclusion rate. */
 export const INCLUSION_RATE = 0.5;
 
-/** Lifetime Capital Gains Exemption on qualifying small-business shares, per individual. */
-export const LCGE = 1_250_000;
+/** Lifetime Capital Gains Exemption on qualifying small-business shares, per individual, for 2026
+ *  ($1,250,000 in 2025; indexation resumed in 2026).
+ *  Source: CRA, "Indexation adjustment for personal income tax and benefit amounts" (checked 2026-09-27) —
+ *  https://www.canada.ca/en/revenue-agency/services/tax/individuals/frequently-asked-questions-individuals/adjustment-personal-income-tax-benefit-amounts.html */
+export const LCGE = 1_275_000;
+
+/** LCGE written out for labels. formatMoney would round it to "$1.28M", so it isn't used here. */
+export const LCGE_LABEL = "$1.275M";
 
 /** EOT capital gains exemption, made permanent April 2026.
  *  Source: EY Tax Alert 2026 No. 28 — https://www.ey.com/en_ca/technical/tax/tax-alerts/2026/tax-alert-2026-no-28 */

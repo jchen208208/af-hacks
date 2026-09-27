@@ -158,8 +158,21 @@
 }
 
 @media print {
+  /* Report page setup: running footer with the notice and page numbers (page margin boxes). */
   @page {
-    margin: 1.5cm;
+    margin: 1.5cm 1.5cm 1.8cm;
+    @bottom-left {
+      content: "Handover · Planning estimates only. Not tax, legal, financial or valuation advice.";
+      font-family: sans-serif;
+      font-size: 7pt;
+      color: #6b6b6b;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: sans-serif;
+      font-size: 7pt;
+      color: #6b6b6b;
+    }
   }
   html {
     font-size: 11pt;

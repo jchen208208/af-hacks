@@ -2,7 +2,7 @@ import { Briefcase, Calculator, Landmark, Lightbulb, Scale } from "lucide-react"
 import type { OptionId } from "@/lib/engine/types";
 
 /** The four core advisors (plan 6.4), with what each does for this particular exit. */
-const ADVISORS: { icon: typeof Calculator; title: string; body: Record<OptionId, string> }[] = [
+export const ADVISORS: { icon: typeof Calculator; title: string; body: Record<OptionId, string> }[] = [
   {
     icon: Calculator,
     title: "Chartered Professional Accountant (CPA)",
@@ -50,7 +50,7 @@ const ADVISORS: { icon: typeof Calculator; title: string; body: Record<OptionId,
 ];
 
 /** One extra pointer per option: the specialist or conversation that matters most for this exit. */
-const CALLOUTS: Record<OptionId, { lead: string; text: string }> = {
+export const CALLOUTS: Record<OptionId, { lead: string; text: string }> = {
   family: {
     lead: "Passing it to family:",
     text: "Look for a CPA who has done family (intergenerational) transfers and estate planning. Include the whole family in the conversation, including children who won't be taking over.",
@@ -65,7 +65,7 @@ const CALLOUTS: Record<OptionId, { lead: string; text: string }> = {
   },
   eot: {
     lead: "Selling to employees:",
-    text: "Employee Ownership Trusts are new in Canada. Ask each advisor whether they have done an EOT sale before. Groups that promote employee ownership, such as Social Capital Partners, also share resources for owners.",
+    text: "Employee Ownership Trusts are new in Canada. Ask each advisor whether they have done an EOT sale before. To read more about how EOTs work in Canada, the nonprofit Social Capital Partners (socialcapitalpartners.ca) publishes research on them.",
   },
   winddown: {
     lead: "Before you close:",

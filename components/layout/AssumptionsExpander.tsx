@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import {
   EOT_EXEMPTION,
   INCLUSION_RATE,
-  LCGE,
+  LCGE_LABEL,
   SDE_MULTIPLES,
   TOP_RATE,
   VALUE_RANGE_SPREAD,
@@ -13,17 +13,17 @@ import { formatMoney } from "@/lib/format";
 
 const TITLE = "Assumptions behind these numbers";
 
-function AssumptionsList() {
+export function AssumptionsList() {
   return (
-    <div className="space-y-3 text-base leading-relaxed text-muted-foreground">
-      <ul className="list-disc space-y-1.5 pl-5 marker:text-primary">
+    <div className="space-y-3 text-base leading-relaxed text-muted-foreground print:space-y-1 print:text-sm print:leading-snug">
+      <ul className="list-disc space-y-1.5 pl-5 marker:text-primary print:space-y-0.5">
         <li>
           Value = profit before owner&apos;s pay × an industry multiple (e.g. manufacturing{" "}
           {SDE_MULTIPLES.manufacturing.low}×–{SDE_MULTIPLES.manufacturing.high}×), adjusted by your
           readiness score, ±{VALUE_RANGE_SPREAD * 100}%.
         </li>
         <li>Capital gains inclusion rate: {INCLUSION_RATE * 100}%.</li>
-        <li>Lifetime Capital Gains Exemption: {formatMoney(LCGE)} per person, assuming your shares qualify.</li>
+        <li>Lifetime Capital Gains Exemption: {LCGE_LABEL} per person in 2026, assuming your shares qualify.</li>
         <li>Employee Ownership Trust exemption: up to {formatMoney(EOT_EXEMPTION)} of gain (one owner assumed).</li>
         <li>Tax uses the approximate top combined personal rate (Ontario {(TOP_RATE.ON * 100).toFixed(2)}%).</li>
         <li>Wind-down recovers about {WINDDOWN_RECOVERY * 100}% of equipment and inventory value.</li>

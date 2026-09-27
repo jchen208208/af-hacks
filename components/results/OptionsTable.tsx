@@ -13,7 +13,7 @@ type Row = {
 
 const money = (v: number | undefined) => (v === undefined ? "—" : formatMoney(v));
 
-const ROWS: Row[] = [
+export const ROWS: Row[] = [
   { label: "Price", render: (o) => money(o.price) },
   { label: "Estimated tax", render: (o) => money(o.tax) },
   { label: "After-tax to you", render: (o) => money(o.afterTax), emphasis: true },

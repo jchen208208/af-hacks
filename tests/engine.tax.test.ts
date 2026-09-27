@@ -25,8 +25,8 @@ describe("tax", () => {
     expect(r.tax).toBeCloseTo(1_000_000 * TOP_RATE.ON, 6);
   });
 
-  it("caps the LCGE at $1.25M", () => {
-    const price = 2_250_100; // gain = 2,250,000
+  it("caps the LCGE at $1.275M", () => {
+    const price = 2_275_100; // gain = 2,275,000
     const r = computeTax({ ...base, price, exemption: LCGE });
     expect(r.taxable).toBeCloseTo(1_000_000 * 0.5, 6);
     expect(r.tax).toBeCloseTo(500_000 * TOP_RATE.ON, 6);
